@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
+
+    <title>AL\CE × Continuum | Local-first AI ecosystem</title>
+    <meta
+      name="description"
+      content="AL\CE is a local AI assistant. Continuum is a private knowledge graph. Together they form an offline workspace for thinking, building and remembering privately."
+    />
+    <meta name="author" content="AL\CE × Continuum" />
+    <meta name="keywords" content="local AI, agentic AI, knowledge graph, semantic memory, RAG, MCP, plugin system, voice assistant, privacy" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="AL\CE × Continuum | Local-first AI ecosystem" />
+    <meta property="og:description" content="A local, agentic assistant and an AI-first knowledge graph. One continuum. Zero cloud." />
+    <meta property="og:image" content="/brand/alice_header.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AL\CE × Continuum" />
+    <meta name="twitter:description" content="Local-first agentic AI + semantic knowledge graph." />
+    <meta name="twitter:image" content="/brand/alice_header.png" />
+
+    <link rel="icon" type="image/webp" href="/brand/alice_logo_dark.webp" />
+    <link rel="preload" as="font" type="font/ttf" href="/fonts/kaluar-demo.semi-bold.ttf" crossorigin />
+
+    <script>
+      // Inline theme bootstrap to avoid FOUC.
+      (function () {
+        try {
+          var stored = localStorage.getItem('alce-theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = stored || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          /* noop */
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
