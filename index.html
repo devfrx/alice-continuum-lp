@@ -3,32 +3,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
     <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
 
-    <title>AL\CE × Continuum | Local-first AI ecosystem</title>
+    <title>AL\CE × CONT\NUUM | Local-first AI assistant and private knowledge graph</title>
     <meta
       name="description"
-      content="AL\CE is a local AI assistant. Continuum is a private knowledge graph. Together they form an offline workspace for thinking, building and remembering privately."
+      content="AL\CE is a local AI assistant. CONT\NUUM is a private knowledge graph. Together they form an offline workspace for agents, notes, voice, tools and semantic memory."
     />
-    <meta name="author" content="AL\CE × Continuum" />
-    <meta name="keywords" content="local AI, agentic AI, knowledge graph, semantic memory, RAG, MCP, plugin system, voice assistant, privacy" />
+    <meta name="author" content="AL\CE × CONT\NUUM" />
+    <meta name="application-name" content="AL\CE × CONT\NUUM" />
+    <meta name="apple-mobile-web-app-title" content="AL\CE × CONT\NUUM" />
+    <meta name="keywords" content="local AI assistant, private knowledge graph, agentic AI, semantic memory, RAG, MCP tools, plugin system, offline AI workspace, voice assistant, local LLM" />
     <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="AL\CE × Continuum | Local-first AI ecosystem" />
-    <meta property="og:description" content="A local, agentic assistant and an AI-first knowledge graph. One continuum. Zero cloud." />
+    <meta property="og:site_name" content="AL\CE × CONT\NUUM" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="/" />
+    <meta property="og:title" content="AL\CE × CONT\NUUM | Local-first AI workspace" />
+    <meta property="og:description" content="A local assistant, a private knowledge graph and visible tool contracts. One offline workspace for thinking, building and remembering privately." />
     <meta property="og:image" content="/brand/alice_header.png" />
+    <meta property="og:image:alt" content="AL\CE and CONT\NUUM local-first AI workspace" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AL\CE × Continuum" />
-    <meta name="twitter:description" content="Local-first agentic AI + semantic knowledge graph." />
+    <meta name="twitter:title" content="AL\CE × CONT\NUUM" />
+    <meta name="twitter:description" content="Local-first assistant, private graph, semantic memory and typed tools." />
     <meta name="twitter:image" content="/brand/alice_header.png" />
+    <meta name="twitter:image:alt" content="AL\CE and CONT\NUUM local-first AI workspace" />
 
     <link rel="icon" type="image/webp" href="/brand/alice_logo_dark.webp" />
+    <link rel="apple-touch-icon" href="/brand/alice_logo_dark.webp" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" as="font" type="font/ttf" href="/fonts/kaluar-demo.semi-bold.ttf" crossorigin />
+    <link rel="preload" as="image" href="/brand/alice_header.png" fetchpriority="high" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "AL\\CE × CONT\\NUUM",
+        "alternateName": "ALCE Continuum",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "description": "A local-first AI workspace combining an assistant runtime, voice, typed plugin tools, semantic memory and a private knowledge graph.",
+        "featureList": [
+          "Local LLM runtime",
+          "Private semantic memory",
+          "Typed plugin and MCP tools",
+          "Offline-first notes and graph workspace",
+          "Voice input and local text-to-speech",
+          "Inspectable local files and artifacts"
+        ],
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
 
     <script>
       // Inline theme bootstrap to avoid FOUC.

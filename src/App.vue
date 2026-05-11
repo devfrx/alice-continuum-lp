@@ -33,10 +33,15 @@ useScrollProgress()
   position: absolute;
   left: -10000px;
   top: auto;
+  min-height: 44px;
   background: var(--accent);
   color: var(--surface-0);
-  padding: 0.5rem 0.75rem;
+  padding: 0.65rem 0.85rem;
   z-index: 1000;
 }
-.skip-link:focus { left: 1rem; top: 1rem; }
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
 </style>

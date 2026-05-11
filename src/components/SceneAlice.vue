@@ -1,45 +1,36 @@
 <script setup lang="ts">
 const cells = [
-  { k: 'Local LLM',         v: 'LM Studio · streaming · OpenAI-compatible' },
-  { k: 'Agent loop',        v: 'Plans a step, calls a tool, checks the result' },
-  { k: 'Plugin system',     v: 'Typed schemas · serializable calls · visible contracts' },
-  { k: 'MCP native',        v: 'Local MCP servers load as tools' },
-  { k: '3D local',          v: 'Trellis and CAD generation on your GPU' },
-  { k: 'Voice',             v: 'faster-whisper in · Piper / XTTS / Kokoro out' },
-  { k: 'Local vectors',     v: 'Embeddings over conversations, notes and files' },
+  { k: 'Local LLM', v: 'LM Studio · streaming · OpenAI-compatible' },
+  { k: 'Agent loop', v: 'Plans a step, calls a tool, checks the result' },
+  { k: 'Plugin system', v: 'Typed schemas · serializable calls · visible contracts' },
+  { k: 'MCP native', v: 'Local MCP servers load as tools' },
+  { k: '3D local', v: 'Trellis and CAD generation on your GPU' },
+  { k: 'Voice', v: 'faster-whisper in · Piper / XTTS / Kokoro out' },
+  { k: 'Local memory', v: 'Embeddings over conversations, notes and files' },
+  { k: 'Audit trail', v: 'Tool calls, sources and artifacts remain inspectable' },
 ]
 </script>
 
 <template>
-  <section
-    id="alce"
-    class="alce scene"
-    data-scroll
-    aria-label="AL\CE"
-  >
+  <section id="alce" class="alce scene" data-scroll aria-label="AL\CE">
     <!-- Large AL\CE watermark drifting upward as you scroll. -->
     <span class="watermark" aria-hidden="true" />
 
     <header class="head">
       <p class="mono">№ III &nbsp;·&nbsp; Execution layer</p>
-      <h2 class="display title">
+      <h2 class="display title" aria-label="Model. Tools. State.">
         <span class="row r1">Model.</span>
         <span class="row r2 serif-italic">Tools.</span>
         <span class="row r3"><span class="accent">State.</span></span>
       </h2>
       <p class="lede">
-        AL\CE is the runtime around the model: chat, voice, plugins, MCP and
-        desktop actions. The loop is explicit, and the result can stay local.
+        AL\CE is the runtime around the model: chat, voice, plugins, MCP,
+        desktop actions and memory. The loop is explicit, and the result stays inspectable.
       </p>
     </header>
 
     <ol class="ledger" aria-label="Capabilities">
-      <li
-        v-for="(c, i) in cells"
-        :key="c.k"
-        class="entry"
-        :style="{ '--i': i, '--n': cells.length }"
-      >
+      <li v-for="(c, i) in cells" :key="c.k" class="entry" :style="{ '--i': i, '--n': cells.length }">
         <span class="idx">{{ String(i + 1).padStart(2, '0') }}</span>
         <span class="dot" aria-hidden="true" />
         <div class="text">
@@ -80,7 +71,10 @@ const cells = [
   transition: opacity 1s var(--ease-cinema);
   filter: contrast(1.1);
 }
-:root[data-theme='light'] .watermark { opacity: calc(0.05 + var(--in, 0) * 0.05); }
+
+:root[data-theme='light'] .watermark {
+  opacity: calc(0.05 + var(--in, 0) * 0.05);
+}
 
 /* Head */
 .head {
@@ -88,12 +82,14 @@ const cells = [
   display: grid;
   gap: 1.25rem;
 }
+
 .mono {
   margin: 0;
   opacity: var(--in, 0);
   transform: translateY(calc((1 - var(--in, 0)) * -8px));
   transition: opacity 0.5s var(--ease-cinema);
 }
+
 .title {
   margin: 0;
   font-size: var(--t-h1);
@@ -101,9 +97,19 @@ const cells = [
   display: grid;
   gap: 0.04em;
 }
-.row { display: block; }
-.row .serif-italic { color: var(--text-secondary); margin-right: 0.15em; }
-.row.r3 .accent { color: var(--accent); }
+
+.row {
+  display: block;
+}
+
+.row .serif-italic {
+  color: var(--text-secondary);
+  margin-right: 0.15em;
+}
+
+.row.r3 .accent {
+  color: var(--accent);
+}
 
 /* Per-row stagger driven by --in (3 rows, thresholds 0/.15/.3) */
 .r1 {
@@ -111,11 +117,13 @@ const cells = [
   transform: translateY(calc((1 - min(1, var(--in, 0) * 2)) * 60px));
   transition: transform 0.9s var(--ease-cinema), opacity 0.5s var(--ease-cinema);
 }
+
 .r2 {
   opacity: calc(min(1, var(--in, 0) * 2 - 0.3));
   transform: translateY(calc((1 - min(1, var(--in, 0) * 2 - 0.3)) * 60px));
   transition: transform 0.9s var(--ease-cinema), opacity 0.5s var(--ease-cinema);
 }
+
 .r3 {
   opacity: calc(min(1, var(--in, 0) * 2 - 0.6));
   transform: translateY(calc((1 - min(1, var(--in, 0) * 2 - 0.6)) * 60px));
@@ -143,6 +151,7 @@ const cells = [
   position: relative;
   border-top: 1px solid var(--rule);
 }
+
 .ledger::before {
   /* vertical scribe line on the left, grows as scrolled */
   content: '';
@@ -169,6 +178,7 @@ const cells = [
   transform: translateX(calc((1 - var(--t)) * -24px));
   transition: opacity 0.6s var(--ease-cinema), transform 0.7s var(--ease-cinema);
 }
+
 .idx {
   font-family: var(--font-mono);
   font-size: var(--t-mono);
@@ -176,6 +186,7 @@ const cells = [
   color: var(--text-muted);
   text-align: right;
 }
+
 .dot {
   width: 7px;
   height: 7px;
@@ -186,6 +197,7 @@ const cells = [
   transform: scale(var(--t));
   transition: transform 0.6s var(--ease-cinema);
 }
+
 .text h3 {
   margin: 0 0 0.35rem;
   font-family: var(--font-display);
@@ -195,6 +207,7 @@ const cells = [
   line-height: 1.05;
   letter-spacing: 0;
 }
+
 .text p {
   margin: 0;
   color: var(--text-secondary);
@@ -204,7 +217,24 @@ const cells = [
 }
 
 @media (max-width: 820px) {
-  .ledger::before { left: calc(34px - 0.5px); }
-  .entry { grid-template-columns: 34px 14px 1fr; gap: 0.75rem; }
+  .alce {
+    padding-top: clamp(8.5rem, 24vw, 10rem);
+  }
+
+  .watermark {
+    background-position: 150% 50%;
+    background-size: clamp(230px, 74vw, 350px) auto;
+    opacity: calc(0.018 + var(--in, 0) * 0.018);
+    transform: none;
+  }
+
+  .ledger::before {
+    left: calc(34px - 0.5px);
+  }
+
+  .entry {
+    grid-template-columns: 34px 14px 1fr;
+    gap: 0.75rem;
+  }
 }
 </style>

@@ -5,14 +5,8 @@ const { theme, toggle } = useTheme()
 </script>
 
 <template>
-  <button
-    class="toggle"
-    type="button"
-    :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
-    :aria-pressed="theme === 'light'"
-    :title="theme === 'dark' ? 'Light' : 'Dark'"
-    @click="toggle"
-  >
+  <button class="toggle" type="button" :aria-label="theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
+    :aria-pressed="theme === 'light'" :title="theme === 'dark' ? 'Light' : 'Dark'" @click="toggle">
     <span class="dot" :data-on="theme === 'light'" aria-hidden="true" />
     <span class="lbl">{{ theme }}</span>
   </button>
@@ -23,7 +17,8 @@ const { theme, toggle } = useTheme()
   display: inline-flex;
   align-items: center;
   gap: 0.55rem;
-  padding: 0.35rem 0.7rem;
+  min-height: 44px;
+  padding: 0.35rem 0.78rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   font-family: var(--font-mono);
@@ -33,10 +28,12 @@ const { theme, toggle } = useTheme()
   color: var(--text-secondary);
   transition: border-color var(--motion-fast), color var(--motion-fast);
 }
+
 .toggle:hover {
   border-color: var(--accent-border);
   color: var(--text-primary);
 }
+
 .dot {
   width: 7px;
   height: 7px;
@@ -45,7 +42,16 @@ const { theme, toggle } = useTheme()
   box-shadow: 0 0 0 1px var(--accent-border);
   transition: transform var(--motion-fast);
 }
+
 .dot[data-on='true'] {
   background: var(--text-primary);
+}
+
+@media (max-width: 820px) {
+  .toggle {
+    background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+    backdrop-filter: blur(16px);
+    border-color: var(--border-hover);
+  }
 }
 </style>

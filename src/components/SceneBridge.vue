@@ -2,24 +2,20 @@
 import Wordmark from './Wordmark.vue'
 
 const channels = [
-  { k: 'Shared index', v: 'One local vector store' },
-  { k: 'Knowledge API',  v: 'Notes and graph as tools' },
-  { k: 'RAG context',      v: 'Sources returned with the answer' },
-  { k: 'Local API',        v: 'localhost · typed · small surface' },
-  { k: 'Event bus',         v: 'Updates without cloud sync' },
+  { k: 'Shared index', v: 'One local vector surface' },
+  { k: 'Knowledge API', v: 'Notes and graph exposed as tools' },
+  { k: 'RAG context', v: 'Sources returned with each answer' },
+  { k: 'Local API', v: 'localhost · typed · narrow surface' },
+  { k: 'Event bus', v: 'Updates without cloud sync' },
+  { k: 'Artifacts', v: 'Generated work lands in visible files' },
 ]
 </script>
 
 <template>
-  <section
-    id="bridge"
-    class="bridge scene"
-    data-scroll
-    aria-label="The bridge"
-  >
+  <section id="bridge" class="bridge scene" data-scroll aria-label="The bridge">
     <p class="mono number">№ V &nbsp;·&nbsp; The bridge</p>
 
-    <h2 class="display title">
+    <h2 class="display title" aria-label="AL\CE queries. CONT\NUUM stores.">
       <Wordmark brand="alce" /> <span class="serif-italic dim">queries.</span>
       <br />
       <span class="sr-gap"> </span>
@@ -33,15 +29,11 @@ const channels = [
     <p class="lede">
       The bridge is a local contract: request context, return sources, write artifacts.
       <br />
-      Request, sources and write target stay visible.
+      Every request, source and write target stays visible.
     </p>
 
     <ul class="channels" role="list">
-      <li
-        v-for="(c, i) in channels"
-        :key="c.k"
-        :style="{ '--i': i, '--n': channels.length }"
-      >
+      <li v-for="(c, i) in channels" :key="c.k" :style="{ '--i': i, '--n': channels.length }">
         <span class="dot" aria-hidden="true" />
         <h3>{{ c.k }}</h3>
         <p>{{ c.v }}</p>
@@ -80,8 +72,15 @@ const channels = [
   transform: translateY(calc((1 - min(1, var(--in, 0) * 1.6)) * 30px));
   transition: opacity 0.7s var(--ease-cinema), transform 0.7s var(--ease-cinema);
 }
-.title .dim   { color: var(--text-muted); }
-.title .accent { color: var(--accent); }
+
+.title .dim {
+  color: var(--text-muted);
+}
+
+.title .accent {
+  color: var(--accent);
+}
+
 .sr-gap {
   position: absolute;
   width: 1px;
@@ -96,6 +95,7 @@ const channels = [
   margin: clamp(1rem, 2vw, 2rem) auto;
   background: var(--rule);
 }
+
 .rule-fill {
   position: absolute;
   top: 0;
@@ -129,6 +129,7 @@ const channels = [
   max-width: 1100px;
   width: 100%;
 }
+
 .channels li {
   padding: 1.25rem 1rem;
   display: grid;
@@ -140,13 +141,18 @@ const channels = [
   transform: translateY(calc((1 - var(--t)) * 16px));
   transition: opacity 0.6s var(--ease-cinema), transform 0.7s var(--ease-cinema);
 }
-.channels li:last-child { border-inline-end: 0; }
+
+.channels li:last-child {
+  border-inline-end: 0;
+}
+
 .dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
 }
+
 .channels h3 {
   margin: 0;
   font-family: var(--font-display);
@@ -154,6 +160,7 @@ const channels = [
   font-weight: 600;
   color: var(--text-primary);
 }
+
 .channels p {
   margin: 0;
   font-size: var(--t-mono);
@@ -164,11 +171,42 @@ const channels = [
 }
 
 @media (max-width: 820px) {
-  .channels { grid-template-columns: 1fr; }
+  .bridge {
+    gap: 1.35rem;
+    padding-inline: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  .number,
+  .title,
+  .rule,
+  .lede,
+  .channels {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .title {
+    font-size: clamp(2.75rem, 14.5vw, 4.35rem);
+    line-height: 1.02;
+  }
+
+  .title :deep(.wordmark) {
+    --wm-gap: 0.04em;
+  }
+
+  .channels {
+    grid-template-columns: 1fr;
+  }
+
   .channels li {
     border-inline-end: 0;
     border-block-end: 1px solid var(--rule);
+    padding: 1.15rem 1rem;
   }
-  .channels li:last-child { border-block-end: 0; }
+
+  .channels li:last-child {
+    border-block-end: 0;
+  }
 }
 </style>

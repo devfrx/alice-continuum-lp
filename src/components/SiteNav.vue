@@ -15,7 +15,7 @@ const marks: Mark[] = [
   { id: 'alce', num: 'III', label: 'Assistant' },
   { id: 'continuum', num: 'IV', label: 'Workspace' },
   { id: 'bridge', num: 'V', label: 'Bridge' },
-  { id: 'tenets', num: 'VI', label: 'Rules' },
+  { id: 'tenets', num: 'VI', label: 'Principles' },
   { id: 'outro', num: 'VII', label: 'Install' },
 ]
 
@@ -57,20 +57,26 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <a class="brand-corner" href="#overture" aria-label="Back to top">
-    <span class="brand-word"><Wordmark brand="alce" /></span>
+  <div class="mobile-nav-scrim" :data-active-section="active" aria-hidden="true" />
+
+  <a class="brand-corner" :data-active-section="active" href="#overture" aria-label="Back to top">
+    <span class="brand-word">
+      <Wordmark brand="alce" />
+    </span>
     <span class="brand-cross" aria-hidden="true">×</span>
-    <span class="brand-word brand-word-cont"><Wordmark brand="continuum" /></span>
+    <span class="brand-word brand-word-cont">
+      <Wordmark brand="continuum" />
+    </span>
   </a>
 
-  <div class="toggle-corner">
+  <div class="toggle-corner" :data-active-section="active">
     <ThemeToggle />
   </div>
 
   <nav class="rail" aria-label="Section index">
     <ul>
       <li v-for="m in marks" :key="m.id" :data-active="active === m.id">
-        <a :href="`#${m.id}`">
+        <a :href="`#${m.id}`" :aria-current="active === m.id ? 'location' : undefined">
           <span class="lbl">{{ m.label }}</span>
           <span class="line" aria-hidden="true" />
           <span class="pin"><span class="num">{{ m.num }}</span></span>
@@ -98,16 +104,24 @@ onBeforeUnmount(() => {
   opacity: 0.92;
   transition: color var(--motion-fast), opacity var(--motion-fast);
 }
+
+.mobile-nav-scrim {
+  display: none;
+}
+
 .brand-corner:hover {
   color: var(--accent);
   opacity: 1;
 }
+
 .brand-word {
   display: inline-flex;
 }
+
 .brand-word-cont {
   color: var(--text-secondary);
 }
+
 .brand-cross {
   font-family: var(--font-display);
   color: var(--text-muted);
@@ -120,6 +134,7 @@ onBeforeUnmount(() => {
   top: 1.5rem;
   right: var(--gutter);
   z-index: 110;
+  transition: opacity var(--motion-fast), transform var(--motion-fast);
 }
 
 .rail {
@@ -130,6 +145,7 @@ onBeforeUnmount(() => {
   z-index: 100;
   pointer-events: none;
 }
+
 .rail ul {
   list-style: none;
   margin: 0;
@@ -138,6 +154,7 @@ onBeforeUnmount(() => {
   gap: 0.55rem;
   pointer-events: auto;
 }
+
 .rail a {
   display: grid;
   grid-template-columns: minmax(0, 9.5rem) 2rem 2rem;
@@ -151,6 +168,7 @@ onBeforeUnmount(() => {
   text-transform: uppercase;
   color: var(--text-muted);
 }
+
 .pin {
   width: 2rem;
   height: 2rem;
@@ -159,6 +177,7 @@ onBeforeUnmount(() => {
   border-radius: 999px;
   transition: background var(--motion-fast), color var(--motion-fast);
 }
+
 .num {
   font-family: var(--font-display);
   font-size: 0.78rem;
@@ -167,6 +186,7 @@ onBeforeUnmount(() => {
   text-align: right;
   transition: color var(--motion-fast);
 }
+
 .line {
   display: block;
   width: 12px;
@@ -175,6 +195,7 @@ onBeforeUnmount(() => {
   transform-origin: right center;
   transition: width var(--motion-fast), background var(--motion-fast), opacity var(--motion-fast);
 }
+
 .lbl {
   opacity: 0;
   transform: translateX(0.35rem);
@@ -183,23 +204,27 @@ onBeforeUnmount(() => {
   color: var(--text-secondary);
   pointer-events: none;
 }
+
 .rail a:hover .line,
 .rail a:focus-visible .line,
 .rail li[data-active='true'] .line {
   width: 28px;
   background: var(--accent);
 }
+
 .rail a:hover .lbl,
 .rail a:focus-visible .lbl {
   opacity: 1;
   transform: none;
   color: var(--text-primary);
 }
+
 .rail a:hover .num,
 .rail a:focus-visible .num,
 .rail li[data-active='true'] .num {
   color: var(--accent);
 }
+
 .rail li[data-active='true'] .pin {
   background: var(--accent-dim);
 }
@@ -213,6 +238,7 @@ onBeforeUnmount(() => {
   pointer-events: none;
   z-index: 99;
 }
+
 .scroll-thread::before,
 .scroll-thread::after {
   content: '';
@@ -223,10 +249,12 @@ onBeforeUnmount(() => {
   border-radius: 999px;
   transform: translateX(-50%);
 }
+
 .scroll-thread::before {
   height: 100%;
   background: var(--rule);
 }
+
 .scroll-thread::after {
   height: calc(var(--p, 0) * 100%);
   background: var(--accent);
@@ -234,10 +262,54 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 820px) {
-  .rail, .scroll-thread { display: none; }
-  .brand-corner { top: 1rem; padding: 0.3rem 0.5rem; }
-  .toggle-corner { top: 1rem; }
+  .mobile-nav-scrim {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 105;
+    display: block;
+    height: 5.8rem;
+    pointer-events: none;
+    background:
+      linear-gradient(to bottom, var(--bg-primary) 0%, var(--bg-primary) 54%, transparent 100%);
+    transition: opacity var(--motion-fast);
+  }
+
+  .rail,
+  .scroll-thread {
+    display: none;
+  }
+
+  .brand-corner {
+    top: 1rem;
+    min-height: 44px;
+    padding: 0.3rem 0.72rem;
+    border: 1px solid var(--border-hover);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  .toggle-corner {
+    top: 1rem;
+  }
+
   .brand-word-cont,
-  .brand-cross { display: none; }
+  .brand-cross {
+    display: none;
+  }
+
+  .mobile-nav-scrim[data-active-section='outro'],
+  .brand-corner[data-active-section='outro'],
+  .toggle-corner[data-active-section='outro'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .brand-corner[data-active-section='outro'],
+  .toggle-corner[data-active-section='outro'] {
+    transform: translateY(-0.75rem);
+  }
 }
 </style>

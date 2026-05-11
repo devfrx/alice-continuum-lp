@@ -3,24 +3,17 @@ import Wordmark from './Wordmark.vue'
 </script>
 
 <template>
-  <section
-    id="overture"
-    class="overture scene scene--full"
-    data-scroll
-    aria-label="AL\CE × CONT\NUUM"
-  >
+  <section id="overture" class="overture scene scene--full" data-scroll aria-label="AL\CE × CONT\NUUM">
     <div class="bg" aria-hidden="true">
-      <img
-        src="/brand/alice_header.png"
-        alt=""
-        loading="eager"
-        decoding="async"
-        fetchpriority="high"
-      />
+      <img src="/brand/alice_header.png" alt="" loading="eager" decoding="async" fetchpriority="high" />
       <span class="photo-slice photo-slice-a" />
       <span class="photo-slice photo-slice-b" />
-      <span class="logo-ghost logo-ghost-alce"><Wordmark brand="alce" /></span>
-      <span class="logo-ghost logo-ghost-continuum"><Wordmark brand="continuum" /></span>
+      <span class="logo-ghost logo-ghost-alce">
+        <Wordmark brand="alce" />
+      </span>
+      <span class="logo-ghost logo-ghost-continuum">
+        <Wordmark brand="continuum" />
+      </span>
       <span class="type-mask type-mask-left">LOCAL</span>
       <span class="type-mask type-mask-right">OWNED</span>
       <span class="vignette" />
@@ -40,10 +33,16 @@ import Wordmark from './Wordmark.vue'
       </h1>
 
       <p class="tag">
-        Model, tools and notes on the same machine.
+        Private AI workspace for agents, voice, notes and memory.
         <br />
         <span class="serif-italic">No account layer. No remote memory.</span>
       </p>
+
+      <ul class="hero-proofs" aria-label="Core promises">
+        <li>Local LLM runtime</li>
+        <li>Private knowledge graph</li>
+        <li>Typed plugin tools</li>
+      </ul>
 
       <p class="mono scroll-cue" aria-hidden="true">
         <span>↓</span>&nbsp; Continue
@@ -80,18 +79,33 @@ import Wordmark from './Wordmark.vue'
 }
 
 @keyframes hero-intro {
-  from { --hero-intro: 0; }
-  to { --hero-intro: 1; }
+  from {
+    --hero-intro: 0;
+  }
+
+  to {
+    --hero-intro: 1;
+  }
 }
 
 @keyframes line-intro {
-  from { --line-intro: 0; }
-  to { --line-intro: 1; }
+  from {
+    --line-intro: 0;
+  }
+
+  to {
+    --line-intro: 1;
+  }
 }
 
 @keyframes layer-intro {
-  from { --layer-intro: 0; }
-  to { --layer-intro: 1; }
+  from {
+    --layer-intro: 0;
+  }
+
+  to {
+    --layer-intro: 1;
+  }
 }
 
 .bg {
@@ -100,6 +114,7 @@ import Wordmark from './Wordmark.vue'
   z-index: -1;
   overflow: hidden;
 }
+
 .bg::before {
   content: '';
   position: absolute;
@@ -115,6 +130,7 @@ import Wordmark from './Wordmark.vue'
   transform: translateX(calc((var(--p, 0) - 0.5) * -82px + (1 - var(--hero-intro, 1)) * 56px));
   pointer-events: none;
 }
+
 .bg::after {
   content: '';
   position: absolute;
@@ -130,14 +146,13 @@ import Wordmark from './Wordmark.vue'
   transform: translateX(calc((var(--p, 0) - 0.5) * 96px + (1 - var(--hero-intro, 1)) * -70px));
   pointer-events: none;
 }
+
 .bg img {
   position: absolute;
   right: 0;
   top: 50%;
-  transform: translate(
-    calc((1 - var(--in, 0)) * 8% + (1 - var(--hero-intro, 1)) * 8% + (var(--p, 0) - 0.5) * -22px),
-    calc(-50% + (var(--p, 0) - 0.5) * 132px + (1 - var(--hero-intro, 1)) * 34px)
-  );
+  transform: translate(calc((1 - var(--in, 0)) * 8% + (1 - var(--hero-intro, 1)) * 8% + (var(--p, 0) - 0.5) * -22px),
+      calc(-50% + (var(--p, 0) - 0.5) * 132px + (1 - var(--hero-intro, 1)) * 34px));
   height: 110%;
   width: auto;
   max-width: 60%;
@@ -146,12 +161,7 @@ import Wordmark from './Wordmark.vue'
   filter: var(--hero-image-filter);
   opacity: calc(var(--hero-image-opacity) * var(--in, 0) * (0.38 + var(--hero-intro, 1) * 0.62));
   mix-blend-mode: var(--hero-image-blend);
-  clip-path: inset(
-    calc((1 - var(--in, 0)) * 5%)
-    0
-    calc(var(--out, 0) * 10%)
-    calc((1 - var(--in, 0)) * 7%)
-  );
+  clip-path: inset(calc((1 - var(--in, 0)) * 5%) 0 calc(var(--out, 0) * 10%) calc((1 - var(--in, 0)) * 7%));
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 15%, #000 82%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, #000 15%, #000 82%, transparent 100%);
   transition: opacity 0.6s var(--ease-cinema);
@@ -180,11 +190,13 @@ import Wordmark from './Wordmark.vue'
     linear-gradient(to bottom, transparent 0%, #000 18%, #000 84%, transparent 100%);
   animation: layer-intro 1.25s var(--ease-cinema) 260ms forwards;
 }
+
 .photo-slice-a {
   background-position: right calc(50% + (var(--p, 0) - 0.5) * -110px);
   clip-path: polygon(20% 15%, 100% 12%, 100% 36%, 8% 42%);
   transform: translateX(calc((1 - var(--layer-intro, 0)) * 92px + (var(--p, 0) - 0.5) * -58px));
 }
+
 .photo-slice-b {
   background-position: right calc(50% + (var(--p, 0) - 0.5) * 95px);
   clip-path: polygon(32% 61%, 100% 58%, 100% 88%, 16% 84%);
@@ -205,11 +217,13 @@ import Wordmark from './Wordmark.vue'
   transform-origin: left center;
   animation: layer-intro 1.35s var(--ease-cinema) 360ms forwards;
 }
+
 .logo-ghost-alce {
   top: 7vh;
   font-size: clamp(5rem, 12vw, 11rem);
   transform: translateX(calc((1 - var(--layer-intro, 0)) * -96px + (var(--p, 0) - 0.5) * -88px));
 }
+
 .logo-ghost-continuum {
   right: var(--gutter);
   left: auto;
@@ -219,6 +233,7 @@ import Wordmark from './Wordmark.vue'
   transform: translateX(calc((1 - var(--layer-intro, 0)) * 106px + (var(--p, 0) - 0.5) * 96px));
   animation-delay: 520ms;
 }
+
 .type-mask {
   position: absolute;
   font-family: var(--font-display);
@@ -231,16 +246,19 @@ import Wordmark from './Wordmark.vue'
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 35%, #000 62%, transparent 100%);
   mask-image: linear-gradient(90deg, transparent 0%, #000 35%, #000 62%, transparent 100%);
 }
+
 .type-mask-left {
   left: calc(var(--gutter) * -0.2);
   top: 18vh;
   transform: translateX(calc((var(--p, 0) - 0.5) * -68px + (1 - var(--hero-intro, 1)) * -90px));
 }
+
 .type-mask-right {
   right: -0.2em;
   bottom: 12vh;
   transform: translateX(calc((var(--p, 0) - 0.5) * 52px + (1 - var(--hero-intro, 1)) * 80px));
 }
+
 .vignette {
   position: absolute;
   inset: 0;
@@ -277,6 +295,7 @@ import Wordmark from './Wordmark.vue'
   gap: clamp(0.15rem, 1.2vw, 0.95rem);
   color: var(--text-primary);
 }
+
 .line {
   --line-intro: 0;
   --start-x: -88px;
@@ -287,17 +306,16 @@ import Wordmark from './Wordmark.vue'
   display: block;
   line-height: 0.85;
   opacity: calc(var(--line-intro, 0) * var(--in, 0));
-  transform: translate3d(
-    calc((1 - var(--in, 0)) * -20px + (var(--p, 0) - 0.5) * var(--scroll-x) + (1 - var(--line-intro, 0)) * var(--start-x)),
-    calc((1 - var(--in, 0)) * 60px + (var(--p, 0) - 0.5) * var(--scroll-y) + (1 - var(--line-intro, 0)) * var(--start-y)),
-    0
-  );
+  transform: translate3d(calc((1 - var(--in, 0)) * -20px + (var(--p, 0) - 0.5) * var(--scroll-x) + (1 - var(--line-intro, 0)) * var(--start-x)),
+      calc((1 - var(--in, 0)) * 60px + (var(--p, 0) - 0.5) * var(--scroll-y) + (1 - var(--line-intro, 0)) * var(--start-y)),
+      0);
   filter: blur(calc((1 - var(--line-intro, 0)) * 14px));
   clip-path: inset(0 0 calc((1 - var(--line-intro, 0)) * 100%) 0);
   transition: opacity 0.4s var(--ease-cinema), filter 0.4s var(--ease-cinema);
   animation: line-intro 1.1s var(--ease-cinema) 240ms forwards;
   will-change: transform, opacity, filter, clip-path;
 }
+
 .line-2 {
   --start-x: 42px;
   --start-y: 48px;
@@ -309,6 +327,7 @@ import Wordmark from './Wordmark.vue'
   padding-left: clamp(1rem, 5vw, 5rem);
   animation-delay: 390ms;
 }
+
 .line-3 {
   --start-x: 54px;
   --start-y: 58px;
@@ -319,8 +338,14 @@ import Wordmark from './Wordmark.vue'
   padding-left: clamp(0.5rem, 2vw, 2.8rem);
   animation-delay: 540ms;
 }
-.line-1 :deep(.wordmark) { --wm-gap: 0.045em; }
-.line-3 :deep(.wordmark) { --wm-gap: 0.058em; }
+
+.line-1 :deep(.wordmark) {
+  --wm-gap: 0.045em;
+}
+
+.line-3 :deep(.wordmark) {
+  --wm-gap: 0.058em;
+}
 
 .tag {
   margin: 0;
@@ -331,7 +356,34 @@ import Wordmark from './Wordmark.vue'
   opacity: calc(var(--hero-intro, 1) * var(--in, 0));
   transform: translateY(calc((1 - var(--in, 0)) * 20px + (1 - var(--hero-intro, 1)) * 24px));
   transition: opacity 0.6s var(--ease-cinema) 240ms,
-              transform 0.6s var(--ease-cinema) 240ms;
+    transform 0.6s var(--ease-cinema) 240ms;
+}
+
+.hero-proofs {
+  list-style: none;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  max-width: 46rem;
+  opacity: calc(var(--hero-intro, 1) * var(--in, 0));
+  transform: translateY(calc((1 - var(--in, 0)) * 14px + (1 - var(--hero-intro, 1)) * 16px));
+  transition: opacity 0.6s var(--ease-cinema) 340ms,
+    transform 0.6s var(--ease-cinema) 340ms;
+}
+
+.hero-proofs li {
+  padding: 0.42rem 0.68rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-primary) 84%, transparent);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--t-mono);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  box-shadow: var(--shadow-soft);
 }
 
 .scroll-cue {
@@ -344,30 +396,107 @@ import Wordmark from './Wordmark.vue'
   opacity: calc(var(--in, 0) * (1 - var(--p, 0) * 1.6));
   animation: drift 2.4s var(--ease-cinema) infinite;
 }
+
 @keyframes drift {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(4px);
+  }
 }
 
 @media (max-width: 820px) {
-  .bg img { max-width: 90%; opacity: calc(0.45 * var(--in, 0)); }
+  .overture {
+    padding-inline: 0;
+  }
+
+  .frame {
+    min-height: 100svh;
+    padding-block: clamp(7rem, 18vh, 9rem) clamp(4.5rem, 12vh, 6rem);
+    padding-inline: clamp(1.1rem, 6vw, 1.4rem);
+    width: 100%;
+  }
+
+  .title {
+    font-size: clamp(4.2rem, 22vw, 6.25rem);
+    max-width: 100%;
+    gap: 0.08em;
+  }
+
+  .line {
+    --start-x: 0px;
+    --scroll-x: 0px;
+    transform: translate3d(0,
+        calc((1 - var(--in, 0)) * 44px + (1 - var(--line-intro, 0)) * var(--start-y)),
+        0);
+  }
+
+  .line-2 {
+    padding-left: 0.08em;
+  }
+
+  .line-3 {
+    font-size: clamp(2.75rem, 14.8vw, 4.35rem);
+    padding-left: 0;
+  }
+
+  .tag {
+    max-width: 27ch;
+  }
+
+  .bg img {
+    max-width: 90%;
+    opacity: calc(0.45 * var(--in, 0));
+  }
+
   .bg::before,
   .bg::after,
   .photo-slice,
   .logo-ghost,
-  .type-mask { display: none; }
+  .type-mask {
+    display: none;
+  }
+
   .vignette {
     background:
       linear-gradient(to bottom, transparent 30%, var(--bg-primary) 75%),
       linear-gradient(to right, var(--bg-primary) 0%, transparent 50%);
   }
+
+  .hero-proofs {
+    max-width: 21rem;
+  }
+
+  .hero-proofs li {
+    padding-block: 0.48rem;
+    letter-spacing: 0.12em;
+  }
+
+  .scroll-cue {
+    left: clamp(1.1rem, 6vw, 1.4rem);
+    bottom: 1.25rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .overture { --hero-intro: 1; }
+  .overture {
+    --hero-intro: 1;
+  }
+
   .photo-slice,
   .logo-ghost,
-  .line { --layer-intro: 1; --line-intro: 1; }
-  .line { filter: none; clip-path: none; }
+  .line {
+    --layer-intro: 1;
+    --line-intro: 1;
+  }
+
+  .line {
+    filter: none;
+    clip-path: none;
+  }
 }
 </style>

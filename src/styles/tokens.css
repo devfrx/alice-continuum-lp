@@ -33,6 +33,7 @@
 
   --accent: #e8dcc8;
   --accent-hover: #f5ede0;
+  --accent-on: #161616;
   --accent-dim: rgba(232, 220, 200, 0.10);
   --accent-border: rgba(232, 220, 200, 0.20);
   --accent-faint: rgba(232, 220, 200, 0.03);
@@ -77,6 +78,7 @@
 
   --accent: #7a5540;
   --accent-hover: #613d2a;
+  --accent-on: #fafaf7;
   --accent-dim: rgba(122, 85, 64, 0.10);
   --accent-border: rgba(122, 85, 64, 0.25);
   --accent-faint: rgba(122, 85, 64, 0.04);
@@ -117,7 +119,7 @@
   --t-h1: clamp(4rem, 2.8rem + 6vw, 9rem);
   --t-mega: clamp(6rem, 4rem + 11vw, 16rem);
 
-  --tracking-tight: -0.025em;
+  --tracking-tight: 0;
   --tracking-normal: 0;
   --tracking-wide: 0.14em;
   --tracking-wider: 0.28em;
@@ -129,4 +131,5 @@
   --ease-cinema: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-fast: 220ms var(--ease-cinema);
   --motion-slow: 900ms var(--ease-cinema);
+  --shadow-soft: 0 18px 60px -42px rgba(0, 0, 0, 0.7);
 }

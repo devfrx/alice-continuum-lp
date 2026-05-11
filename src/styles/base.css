@@ -9,6 +9,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  min-width: 320px;
+  overflow-x: clip;
   background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -22,6 +24,11 @@ body {
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 7rem;
+}
+
+#app {
+  min-height: 100vh;
 }
 
 img,
@@ -58,18 +65,30 @@ button {
   color: var(--text-primary);
 }
 
-::-webkit-scrollbar { width: 0; height: 0; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb {
+  background: var(--surface-4);
+  border: 3px solid var(--bg-primary);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
 /* ── Cinematic primitives ───────────────────────────────────── */
 .scene {
   position: relative;
   min-height: 100vh;
+  scroll-margin-top: 7rem;
   width: 100%;
   display: grid;
   align-content: center;
   padding-block: clamp(6rem, 12vh, 10rem);
   padding-inline: var(--gutter);
   overflow: hidden;
+}
+
+.scene > * {
+  min-width: 0;
 }
 
 .scene--tall {
@@ -115,6 +134,19 @@ button {
   background: var(--rule);
   border: 0;
   width: 100%;
+}
+
+@media (max-width: 520px) {
+  .scene {
+    min-height: auto;
+    scroll-margin-top: 6.75rem;
+    padding-block: clamp(5rem, 16vw, 7rem);
+    padding-inline: clamp(1rem, 5vw, 1.25rem);
+  }
+
+  .mono {
+    letter-spacing: 0.18em;
+  }
 }
 
 /* ── Reveal-on-scroll ───────────────────────────────────────── */

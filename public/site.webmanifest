@@ -1,0 +1,23 @@
+{
+    "name": "AL\\CE × CONT\\NUUM",
+    "short_name": "AL\\CE",
+    "description": "Local-first AI assistant, private knowledge graph and offline semantic memory workspace.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#161616",
+    "theme_color": "#161616",
+    "icons": [
+        {
+            "src": "/brand/alice_logo_dark.webp",
+            "sizes": "512x512",
+            "type": "image/webp",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/brand/alice_logo_light.webp",
+            "sizes": "512x512",
+            "type": "image/webp",
+            "purpose": "any"
+        }
+    ]
+}

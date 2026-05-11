@@ -65,7 +65,7 @@ import Wordmark from './Wordmark.vue'
     min-height: 100vh;
     padding-block: clamp(4.75rem, 7vh, 6.75rem);
     padding-inline: var(--gutter);
-    scroll-margin-top: 0;
+    scroll-margin-top: 7rem;
 }
 
 .number {
