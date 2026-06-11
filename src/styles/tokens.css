@@ -51,8 +51,10 @@ html[data-theme='light'] {
 
 @font-face {
   font-family: 'Kaluar';
-  src: url('/fonts/kaluar.woff2') format('woff2'),
-       url('/fonts/kaluar-demo.semi-bold.ttf') format('truetype');
+  /* woff2 only: the raw demo TTF ships placeholder boxes for accented
+     letters and dashes — kaluar.woff2 is the repaired subset
+     (see scripts/patch-font.py). */
+  src: url('/fonts/kaluar.woff2') format('woff2');
   font-weight: 600;
   font-display: swap;
 }
