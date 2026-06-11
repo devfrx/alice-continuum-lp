@@ -1,47 +1,25 @@
 <script setup lang="ts">
-import SiteNav from './components/SiteNav.vue'
-import SceneOverture from './components/SceneOverture.vue'
-import SceneDuo from './components/SceneDuo.vue'
-import SceneAlice from './components/SceneAlice.vue'
-import SceneContinuum from './components/SceneContinuum.vue'
-import SceneBridge from './components/SceneBridge.vue'
-import SceneTenets from './components/SceneTenets.vue'
-import SceneOutro from './components/SceneOutro.vue'
-import { useReveal } from './composables/useReveal'
-import { useScrollProgress } from './composables/useScrollProgress'
-
-useReveal()
-useScrollProgress()
+import SiteNav from './components/chrome/SiteNav.vue'
+import SiteFooter from './components/chrome/SiteFooter.vue'
+import SceneOverture from './components/scenes/SceneOverture.vue'
+import SceneSession from './components/scenes/SceneSession.vue'
+import SceneAlice from './components/scenes/SceneAlice.vue'
+import SceneContinuum from './components/scenes/SceneContinuum.vue'
+import SceneBridge from './components/scenes/SceneBridge.vue'
+import SceneTenets from './components/scenes/SceneTenets.vue'
+import SceneOutro from './components/scenes/SceneOutro.vue'
 </script>
 
 <template>
-  <a class="skip-link" href="#alce">Skip to content</a>
   <SiteNav />
-  <main>
+  <main id="main">
     <SceneOverture />
-    <SceneDuo />
+    <SceneSession />
     <SceneAlice />
     <SceneContinuum />
     <SceneBridge />
     <SceneTenets />
     <SceneOutro />
   </main>
+  <SiteFooter />
 </template>
-
-<style scoped>
-.skip-link {
-  position: absolute;
-  left: -10000px;
-  top: auto;
-  min-height: 44px;
-  background: var(--accent);
-  color: var(--surface-0);
-  padding: 0.65rem 0.85rem;
-  z-index: 1000;
-}
-
-.skip-link:focus {
-  left: 1rem;
-  top: 1rem;
-}
-</style>

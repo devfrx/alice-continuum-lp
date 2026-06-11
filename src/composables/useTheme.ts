@@ -1,35 +1,38 @@
-import { onMounted, ref, watch } from 'vue'
+import { ref, type Ref } from 'vue'
 
 export type Theme = 'dark' | 'light'
 
-const STORAGE_KEY = 'alce-theme'
+const STORAGE_KEY = 'lp-theme'
 
-const currentTheme = ref<Theme>('dark')
-
-function applyTheme(theme: Theme): void {
-  document.documentElement.setAttribute('data-theme', theme)
+function initialTheme(): Theme {
+  if (typeof document !== 'undefined') {
+    const current = document.documentElement.dataset.theme
+    if (current === 'dark' || current === 'light') return current
+  }
+  return 'dark'
 }
 
-export function useTheme() {
-  onMounted(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as Theme | null
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    currentTheme.value = stored ?? (prefersDark ? 'dark' : 'light')
-    applyTheme(currentTheme.value)
-  })
+// Module-level singleton: every caller shares the same ref.
+const theme: Ref<Theme> = ref(initialTheme())
 
-  watch(currentTheme, (next) => {
-    applyTheme(next)
-    try {
-      localStorage.setItem(STORAGE_KEY, next)
-    } catch {
-      /* storage unavailable */
-    }
-  })
-
-  function toggle(): void {
-    currentTheme.value = currentTheme.value === 'dark' ? 'light' : 'dark'
+function applyTheme(value: Theme): void {
+  if (typeof document !== 'undefined') {
+    document.documentElement.dataset.theme = value
   }
+  try {
+    localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    // Storage unavailable (private mode, quota) — theme still applies.
+  }
+}
 
-  return { theme: currentTheme, toggle }
+export function useTheme(): { theme: Ref<Theme>; toggle: () => void } {
+  return {
+    theme,
+    toggle: () => {
+      const next: Theme = theme.value === 'dark' ? 'light' : 'dark'
+      theme.value = next
+      applyTheme(next)
+    },
+  }
 }

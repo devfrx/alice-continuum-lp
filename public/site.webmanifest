@@ -1,23 +1,23 @@
 {
-    "name": "AL\\CE × CONT\\NUUM",
-    "short_name": "AL\\CE",
-    "description": "Local-first AI assistant, private knowledge graph and offline semantic memory workspace.",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#161616",
-    "theme_color": "#161616",
-    "icons": [
-        {
-            "src": "/brand/alice_logo_dark.webp",
-            "sizes": "512x512",
-            "type": "image/webp",
-            "purpose": "any maskable"
-        },
-        {
-            "src": "/brand/alice_logo_light.webp",
-            "sizes": "512x512",
-            "type": "image/webp",
-            "purpose": "any"
-        }
-    ]
+  "name": "AL\\CE × CONT\\NUUM",
+  "short_name": "AL\\CE",
+  "description": "A private AI workspace that runs on your machine: AL\\CE, the local assistant, and CONT\\NUUM, the knowledge base.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#161616",
+  "theme_color": "#161616",
+  "icons": [
+    {
+      "src": "/brand/gen/favicon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/gen/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }

@@ -1,74 +1,64 @@
-# AL\CE × Continuum Landing
+# AL\CE × CONT\NUUM — Landing Page
 
-High-end editorial landing page for the AL\CE + Continuum local-first AI ecosystem.
+Cinematic, scroll-driven landing page for the suite: **AL\CE** (local-first personal AI
+assistant) and **CONT\NUUM** (AI-first knowledge base). Static, bilingual (EN/IT),
+dark + light themes, zero runtime dependencies beyond Vue and the fonts.
+
+The page's visual director is the brand backslash: a parametric diagonal that splits
+the hero into an ivory (AL\CE) and a night (CONT\NUUM) plane, stays as the seam during
+the pinned "living demo" session, sweeps left and right for the product focus scenes,
+lies down into the bridge contract, and recomposes in the outro.
 
 ## Stack
 
-- Vite + Vue 3 (`<script setup lang="ts">`) + TypeScript (strict)
-- Pure CSS, no UI framework
-- Design tokens mirrored from `frontend/src/renderer/src/assets/styles/theme.css`
-- Brand font: **Kaluar Demo Semi-Bold** (already shipped in `public/fonts`)
-- All branding assets in `public/brand` (copies from `landing-assets/`)
+- **Vue 3.5** + TypeScript (strict) + **Vite 6**
+- No animation/3D libraries: custom scroll engine (`src/lib/raf.ts`,
+  `src/composables/useScrollScene.ts`, `usePinnedTimeline.ts`) and a custom
+  3D-projected canvas constellation (`src/lib/graph.ts`,
+  `src/components/demo/KnowledgeGraph.vue`)
+- **vitest** for the pure math (motion + graph generation/projection)
+- Deploy: **Vercel** static (`vercel.json`)
 
-## Develop
+## Commands
 
-```powershell
-cd landing
-npm install
-npm run dev
+```bash
+npm run dev        # dev server
+npm run build      # typecheck + production build (dist/)
+npm run preview    # serve the production build locally
+npm run typecheck  # vue-tsc --noEmit
+npm test           # vitest run
+npm run assets     # regenerate public/brand/gen/ from brand sources (sharp)
 ```
-
-## Build
-
-```powershell
-npm run build
-npm run preview
-```
-
-## Deploy
-
-The project is **Vercel-ready**. The included `vercel.json` selects the Vite
-preset; the build command is `npm run build` and the output directory is `dist`.
-No environment variables required.
 
 ## Structure
 
 ```
-landing/
-├── index.html              # SEO metadata + theme bootstrap (no FOUC)
-├── public/
-│   ├── brand/              # Logos, header, app marks (webp + png)
-│   └── fonts/              # kaluar-demo.semi-bold.ttf
-├── src/
-│   ├── App.vue
-│   ├── main.ts
-│   ├── env.d.ts
-│   ├── styles/
-│   │   ├── tokens.css      # ALICE light/dark palette + type scale
-│   │   └── base.css        # reset, rhythm, focus, scrollbar
-│   ├── composables/
-│   │   └── useTheme.ts     # dark mode toggle, persisted
-│   └── components/
-│       ├── SiteHeader.vue
-│       ├── SiteFooter.vue
-│       ├── ThemeToggle.vue
-│       ├── HeroSection.vue
-│       ├── ManifestoSection.vue
-│       ├── AliceSection.vue
-│       ├── ContinuumSection.vue
-│       ├── BridgeSection.vue
-│       └── CapabilitiesSection.vue
-├── vite.config.ts
-├── vercel.json
-├── tsconfig.json
-└── tsconfig.node.json
+src/
+  content/copy.ts        # ALL page text, EN+IT, tuple-typed for key/count parity
+  content/links.ts       # GitHub repo URLs
+  lib/                   # pure, tested: motion math, raf scheduler, graph
+  composables/           # theme, locale, reduced-motion, scroll, parallax
+  components/
+    brand/               # Sparkle, Wordmark (theme- or tone-driven assets)
+    chrome/              # nav, theme/locale toggles, footer
+    fx/DiagonalStage.vue # the parametric diagonal (poses + clipped planes)
+    demo/                # KnowledgeGraph canvas, ChatStream, chips, micro-demos
+    scenes/              # the seven scenes, in scroll order
 ```
 
-## Design rules
+## Conventions
 
-- Editorial / fashion-magazine layout with asymmetric grids and heavy whitespace
-- Two type families only: **Kaluar** (display) and a system sans (body)
-- Roman-numeral section markers (№ I … № VI)
-- Italic Times-New-Roman fragments as editorial accents
-- Strict ALICE palette, no foreign colors, no glassy gradients
-- Dark mode default; light mode mirrors ALICE light theme (`#7A5540` accent)
+- Scene reveals are scrub-reversible: driven by the `--p` CSS custom property
+  (0..1 section progress) written by the scroll composables — no one-shot observers.
+- `prefers-reduced-motion`: every scene degrades to a static, fully readable layout;
+  the session scene unpins; canvases render a single frame.
+- The hero is deliberately theme-invariant (ivory vs night); the rest of the page
+  follows the `html[data-theme]` tokens in `src/styles/tokens.css`.
+- Brand asset naming is glyph color: `*_light.webp` = cream (for dark surfaces),
+  `*_dark.webp` = espresso (for light surfaces).
+- Generated assets in `public/brand/gen/` are committed; regenerate with
+  `npm run assets` only when brand sources change. The hero source is 1024px wide.
+
+## Deploy
+
+Vercel project with framework `vite`. Push to deploy; `vercel.json` enables clean URLs.
