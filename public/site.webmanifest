@@ -1,6 +1,7 @@
 {
   "name": "AL\\CE × CONT\\NUUM",
   "short_name": "AL\\CE",
+  "description": "A private AI workspace that runs on your machine: AL\\CE, the local assistant, and CONT\\NUUM, the knowledge base.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#161616",
@@ -16,7 +17,7 @@
       "src": "/brand/gen/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }

@@ -49,7 +49,8 @@ const results = [];
 // ── Step 2: Hero images ───────────────────────────────────────────────────────
 
 const heroSrc = path.join(SRC, 'alice_header.png');
-const heroWidths = [800, 1200, 1600];
+// Source is 1024px wide; update if a higher-res source lands.
+const heroWidths = [800, 1024];
 
 for (const w of heroWidths) {
   // WebP
@@ -184,11 +185,11 @@ for (const r of results) {
 console.log('└─────────────────────────────────────────────────────┴──────────┘');
 
 // Sanity check
-const hero1600avif = results.find(r => r.file.includes('alice-hero-1600.avif'));
+const hero1024avif = results.find(r => r.file.includes('alice-hero-1024.avif'));
 const ogResult     = results.find(r => r.file.includes('og.png'));
 
-if (hero1600avif && parseFloat(hero1600avif.kb) > 150) {
-  console.warn(`\n[WARN] alice-hero-1600.avif is ${hero1600avif.kb} KB (target < 150 KB)`);
+if (hero1024avif && parseFloat(hero1024avif.kb) > 80) {
+  console.warn(`\n[WARN] alice-hero-1024.avif is ${hero1024avif.kb} KB (target < 80 KB)`);
 }
 if (ogResult && parseFloat(ogResult.kb) > 300) {
   console.warn(`\n[WARN] og.png is ${ogResult.kb} KB (target < 300 KB)`);
