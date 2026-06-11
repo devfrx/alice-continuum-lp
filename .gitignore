@@ -6,4 +6,5 @@ dist-ssr
 *.local
 *.log
 
-landing-assets/.claude/
+landing-assets/
+.claude/
