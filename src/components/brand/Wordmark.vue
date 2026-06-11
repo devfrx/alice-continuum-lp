@@ -8,8 +8,10 @@ const props = withDefaults(
     variant?: 'text' | 'mark'
     height?: number
     decorative?: boolean
+    /** Force a glyph color regardless of theme (for theme-invariant panes). */
+    tone?: 'auto' | 'cream' | 'espresso'
   }>(),
-  { variant: 'text', decorative: false },
+  { variant: 'text', decorative: false, tone: 'auto' },
 )
 
 const { theme } = useTheme()
@@ -17,7 +19,14 @@ const { theme } = useTheme()
 // Asset naming is glyph color: `_light` (cream) is for the dark theme,
 // `_dark` (espresso) is for the light theme.
 const src = computed(() => {
-  const suffix = theme.value === 'dark' ? 'light' : 'dark'
+  const suffix =
+    props.tone === 'cream'
+      ? 'light'
+      : props.tone === 'espresso'
+        ? 'dark'
+        : theme.value === 'dark'
+          ? 'light'
+          : 'dark'
   const stem = props.variant === 'text' ? `${props.brand}_text_logo` : `${props.brand}_logo`
   return `/brand/${stem}_${suffix}.webp`
 })

@@ -16,6 +16,11 @@ const props = withDefaults(
     speed?: number
     /** Indices of nodes drawing a pulsing ring. */
     pulse?: number[]
+    /**
+     * Fixed accent color (hex), bypassing the theme token — for panes whose
+     * background is theme-invariant (e.g. the hero's always-dark side).
+     */
+    accent?: string
   }>(),
   {
     nodes: 80,
@@ -23,6 +28,7 @@ const props = withDefaults(
     revealed: undefined,
     speed: 0.05,
     pulse: () => [],
+    accent: undefined,
   },
 )
 
@@ -77,7 +83,8 @@ function ensureBuffers(n: number): void {
 }
 
 function readAccent(): void {
-  const raw = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+  const raw =
+    props.accent ?? getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
   let r = 232
   let g = 220
   let b = 200
@@ -266,6 +273,9 @@ onMounted(() => {
 
   resizeObserver = new ResizeObserver(() => resize())
   resizeObserver.observe(el)
+  // Fallback for environments where RO callbacks are delayed/suppressed
+  // (e.g. pages mounted while hidden) — a window resize re-measures.
+  window.addEventListener('resize', resize, { passive: true })
 
   intersectionObserver = new IntersectionObserver(
     (entries) => {
@@ -307,9 +317,18 @@ watch(graph, () => {
   if (reducedMotion.value || !stopFrame) renderStatic()
 })
 
+watch(
+  () => props.accent,
+  () => {
+    readAccent()
+    if (reducedMotion.value || !stopFrame) renderStatic()
+  },
+)
+
 onBeforeUnmount(() => {
   stopFrame?.()
   stopFrame = null
+  window.removeEventListener('resize', resize)
   resizeObserver?.disconnect()
   resizeObserver = null
   intersectionObserver?.disconnect()

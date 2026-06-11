@@ -37,11 +37,17 @@ const height = ref(0)
 
 let observer: ResizeObserver | null = null
 
-onMounted(() => {
+function measure(): void {
   const el = root.value
   if (!el) return
   width.value = el.clientWidth
   height.value = el.clientHeight
+}
+
+onMounted(() => {
+  const el = root.value
+  if (!el) return
+  measure()
   observer = new ResizeObserver((entries) => {
     const entry = entries[0]
     if (!entry) return
@@ -49,11 +55,15 @@ onMounted(() => {
     height.value = entry.contentRect.height
   })
   observer.observe(el)
+  // Fallback for environments where RO callbacks are delayed/suppressed
+  // (e.g. pages mounted while hidden) — a window resize re-measures.
+  window.addEventListener('resize', measure, { passive: true })
 })
 
 onBeforeUnmount(() => {
   observer?.disconnect()
   observer = null
+  window.removeEventListener('resize', measure)
 })
 
 /** Current interpolated pose. Reduced motion snaps to the `to` pose. */
