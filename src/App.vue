@@ -5,6 +5,8 @@ import SceneOverture from './components/scenes/SceneOverture.vue'
 import SceneSession from './components/scenes/SceneSession.vue'
 import SceneAlice from './components/scenes/SceneAlice.vue'
 import SceneContinuum from './components/scenes/SceneContinuum.vue'
+import SceneBridge from './components/scenes/SceneBridge.vue'
+import SceneTenets from './components/scenes/SceneTenets.vue'
 </script>
 
 <template>
@@ -14,8 +16,8 @@ import SceneContinuum from './components/scenes/SceneContinuum.vue'
     <SceneSession />
     <SceneAlice />
     <SceneContinuum />
-    <!-- SceneBridge -->
-    <!-- ScenePrinciples -->
+    <SceneBridge />
+    <SceneTenets />
     <!-- SceneOutro -->
   </main>
   <SiteFooter />
