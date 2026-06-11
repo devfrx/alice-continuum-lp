@@ -1,4 +1,4 @@
-import { ref, watch, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 export type Theme = 'dark' | 'light'
 
@@ -15,26 +15,24 @@ function initialTheme(): Theme {
 // Module-level singleton: every caller shares the same ref.
 const theme: Ref<Theme> = ref(initialTheme())
 
-let applied = false
-function apply(): void {
-  if (applied) return
-  applied = true
-  watch(theme, (value) => {
+function applyTheme(value: Theme): void {
+  if (typeof document !== 'undefined') {
     document.documentElement.dataset.theme = value
-    try {
-      localStorage.setItem(STORAGE_KEY, value)
-    } catch {
-      // Storage unavailable (private mode, quota) — theme still applies.
-    }
-  })
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    // Storage unavailable (private mode, quota) — theme still applies.
+  }
 }
 
 export function useTheme(): { theme: Ref<Theme>; toggle: () => void } {
-  apply()
   return {
     theme,
     toggle: () => {
-      theme.value = theme.value === 'dark' ? 'light' : 'dark'
+      const next: Theme = theme.value === 'dark' ? 'light' : 'dark'
+      theme.value = next
+      applyTheme(next)
     },
   }
 }

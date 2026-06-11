@@ -16,8 +16,10 @@ function tick(now: number): void {
   if (!running) return
   const dt = Math.min((now - last) / 1000, MAX_DT)
   last = now
+  // Subscribers added during iteration run in the same tick (Set semantics) by design.
   for (const fn of subscribers) fn(dt, now)
-  rafId = window.requestAnimationFrame(tick)
+  // Guard: a stop() inside a callback sets running=false; skip reschedule to avoid forking a second loop.
+  if (running) rafId = window.requestAnimationFrame(tick)
 }
 
 function start(): void {

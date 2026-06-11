@@ -1,4 +1,4 @@
-import { computed, ref, watch, type ComputedRef, type Ref } from 'vue'
+import { computed, ref, type ComputedRef, type Ref } from 'vue'
 import { copy, type Copy, type Locale } from '../content/copy'
 
 const STORAGE_KEY = 'lp-locale'
@@ -15,18 +15,15 @@ const locale: Ref<Locale> = ref(initialLocale())
 
 const t: ComputedRef<Copy> = computed(() => copy[locale.value])
 
-let applied = false
-function apply(): void {
-  if (applied) return
-  applied = true
-  watch(locale, (value) => {
+function applyLocale(value: Locale): void {
+  if (typeof document !== 'undefined') {
     document.documentElement.lang = value
-    try {
-      localStorage.setItem(STORAGE_KEY, value)
-    } catch {
-      // Storage unavailable — locale still applies for the session.
-    }
-  })
+  }
+  try {
+    localStorage.setItem(STORAGE_KEY, value)
+  } catch {
+    // Storage unavailable — locale still applies for the session.
+  }
 }
 
 export function useLocale(): {
@@ -34,12 +31,13 @@ export function useLocale(): {
   t: ComputedRef<Copy>
   toggle: () => void
 } {
-  apply()
   return {
     locale,
     t,
     toggle: () => {
-      locale.value = locale.value === 'en' ? 'it' : 'en'
+      const next: Locale = locale.value === 'en' ? 'it' : 'en'
+      locale.value = next
+      applyLocale(next)
     },
   }
 }
