@@ -45,24 +45,25 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
       </header>
 
       <div class="graph-stage">
-        <KnowledgeGraph :nodes="120" :seed="23" :speed="0.05" />
+        <KnowledgeGraph :nodes="140" :seed="23" :speed="0.05" :zoom="1.5" />
         <p class="file-note">
           <Sparkle :size="10" />
           <span>{{ t.continuum.fileNote }}</span>
         </p>
       </div>
 
-      <ul class="caps">
+      <ol class="caps">
         <li
           v-for="(cap, i) in t.continuum.capabilities"
           :key="cap.title"
           class="cap"
-          :style="{ '--rt': 0.4 + i * 0.05 }"
+          :style="{ '--rt': 0.42 + i * 0.05 }"
         >
+          <span class="cap-num">0{{ i + 1 }}</span>
           <h3 class="cap-title">{{ cap.title }}</h3>
           <code class="cap-mono">{{ cap.mono }}</code>
         </li>
-      </ul>
+      </ol>
     </div>
   </section>
 </template>
@@ -76,6 +77,11 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
 .stage {
   position: absolute;
   inset: 0;
+}
+
+/* The seam crosses behind a whole composed scene here — soften it. */
+.stage :deep(.line) {
+  opacity: 0.4;
 }
 
 .pane {
@@ -103,10 +109,12 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
 
 /* Mirrored composition: header sits right-aligned. */
 .head {
+  position: relative;
+  z-index: 1;
   max-width: 620px;
   align-self: flex-end;
   text-align: right;
-  margin-bottom: clamp(20px, 4vh, 44px);
+  margin-bottom: 0;
 }
 
 .kicker {
@@ -140,11 +148,12 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
   max-width: 56ch;
 }
 
-/* ——— central graph ——— */
+/* ——— central graph — rises behind the header for depth ——— */
 
 .graph-stage {
   position: relative;
-  height: clamp(320px, 48vh, 520px);
+  height: clamp(360px, 54vh, 580px);
+  margin-top: clamp(-130px, -12vh, -60px);
   margin-bottom: clamp(28px, 5vh, 48px);
 }
 
@@ -156,16 +165,20 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
 .file-note {
   position: absolute;
   left: 0;
-  bottom: 0;
+  bottom: 6px;
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
+  max-width: 44ch;
+  padding: 11px 16px;
+  border: 1px solid var(--accent-border);
+  border-radius: 6px;
+  background: var(--bg);
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.05em;
   line-height: 1.5;
   color: var(--text-2);
-  max-width: 46ch;
 }
 
 .file-note :first-child {
@@ -179,23 +192,36 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
   list-style: none;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .cap {
-  background: var(--bg);
-  padding: 18px 16px 20px;
+  position: relative;
+  padding: 18px 18px 20px 0;
+  margin-right: 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-right: 1px solid var(--line);
   opacity: clamp(0.04, calc((var(--p, 1) - var(--rt)) * 9), 1);
   transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1)) * 16px));
 }
 
+.cap:last-child {
+  border-right: 0;
+  margin-right: 0;
+}
+
+.cap-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
 .cap-title {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 500;
 }
 
@@ -229,16 +255,34 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
   }
 
   .graph-stage {
-    height: 300px;
+    height: 360px;
+    margin-top: 8px;
   }
 
+  /* Stays an overlay chip pinned to the stage bottom; the solid
+     background keeps it readable over the constellation. */
   .file-note {
-    position: static;
-    margin-top: 10px;
+    bottom: 0;
+    right: 0;
   }
 
   .caps {
     grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--line);
+  }
+
+  .cap {
+    padding: 16px;
+    margin-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .cap:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .cap:nth-child(n + 5) {
+    border-bottom: 0;
   }
 
   .cap:last-child {

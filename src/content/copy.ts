@@ -107,11 +107,19 @@ export interface Copy {
     intro: string
     labelTop: string
     labelBottom: string
+    /** The handshake across the seam: one request, one response. */
+    ask: { label: string; mono: string }
+    reply: { label: string; mono: string }
+    clausesTitle: string
     channels: [string, string, string, string, string]
   }
   tenets: {
     kicker: string
     title: string
+    /** Case-file header line, e.g. 'FILE № AC-066 · CLASSIFICATION: PUBLIC'. */
+    docId: string
+    /** Case-file footer line, e.g. 'rev 2026.06 · nothing redacted'. */
+    docFoot: string
     seals: [TenetSeal, TenetSeal, TenetSeal, TenetSeal, TenetSeal, TenetSeal]
     stamp: string
   }
@@ -254,12 +262,17 @@ const en: Copy = {
     intro: 'AL\\CE queries. CONT\\NUUM stores. They talk over a local contract — request context, return sources, write artifacts. Shared context, separate files. Nothing hides behind a service.',
     labelTop: 'AL\\CE · queries',
     labelBottom: 'CONT\\NUUM · stores',
+    ask: { label: 'AL\\CE · asks', mono: 'ctx.request("dragon · timeline")' },
+    reply: { label: 'CONT\\NUUM · answers', mono: '→ 3 sources · notes/dragon.md' },
+    clausesTitle: 'Clauses',
     channels: ['shared index', 'knowledge API', 'RAG context', 'event bus', 'artifacts'],
   },
 
   tenets: {
     kicker: 'Dossier',
     title: 'Plain by design.',
+    docId: 'FILE NO. AC-066 · CLASSIFICATION: PUBLIC',
+    docFoot: 'rev 2026.06 · nothing redacted',
     seals: [
       { label: 'CLOUD CALLS', value: '0', note: 'We counted twice.' },
       { label: 'ACCOUNTS REQUIRED', value: '0', note: 'You already own the machine.' },
@@ -419,12 +432,17 @@ const it: Copy = {
     intro: 'AL\\CE interroga. CONT\\NUUM archivia. Si parlano attraverso un contratto locale: chiedere contesto, restituire fonti, scrivere artefatti. Contesto condiviso, file separati. Niente si nasconde dietro un servizio.',
     labelTop: 'AL\\CE · interroga',
     labelBottom: 'CONT\\NUUM · archivia',
+    ask: { label: 'AL\\CE · chiede', mono: 'ctx.request("drago · cronologia")' },
+    reply: { label: 'CONT\\NUUM · risponde', mono: '→ 3 fonti · notes/dragon.md' },
+    clausesTitle: 'Clausole',
     channels: ['indice condiviso', 'API della conoscenza', 'contesto RAG', 'event bus', 'artefatti'],
   },
 
   tenets: {
-    kicker: 'Dossier',
+    kicker: 'Fascicolo',
     title: 'Semplice per scelta.',
+    docId: 'FASCICOLO N. AC-066 · CLASSIFICAZIONE: PUBBLICA',
+    docFoot: 'rev 2026.06 · nessun omissis',
     seals: [
       { label: 'CHIAMATE CLOUD', value: '0', note: 'Abbiamo contato due volte.' },
       { label: 'ACCOUNT RICHIESTI', value: '0', note: 'La macchina è già tua.' },

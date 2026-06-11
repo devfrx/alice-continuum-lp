@@ -21,6 +21,8 @@ const props = withDefaults(
      * background is theme-invariant (e.g. the hero's always-dark side).
      */
     accent?: string
+    /** Cloud radius multiplier; >1 lets the constellation overfill its box. */
+    zoom?: number
   }>(),
   {
     nodes: 80,
@@ -29,6 +31,7 @@ const props = withDefaults(
     speed: 0.05,
     pulse: () => [],
     accent: undefined,
+    zoom: 1,
   },
 )
 
@@ -157,7 +160,7 @@ function render(now: number, isStatic: boolean): void {
   const vh = cssH
   for (let i = 0; i < n; i++) {
     const node = g.nodes[i]!
-    const p = project(node, rot, FOV, { w: vw, h: vh })
+    const p = project(node, rot, FOV, { w: vw, h: vh }, props.zoom)
     px[i] = p.sx
     py[i] = p.sy
     pscale[i] = p.scale

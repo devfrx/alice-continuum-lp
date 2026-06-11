@@ -119,21 +119,23 @@ export interface Projected {
  * Rotate `p` around the Y axis by `rotY`, then project with a simple
  * perspective camera sitting on +z at distance `fov` (in ellipsoid
  * radii) looking at the origin. Screen radius is 38% of the smaller
- * viewport dimension. `scale` is the perspective factor (≈0.75..1.5
- * for fov = 3 and z' in [-1, 1]).
+ * viewport dimension, multiplied by `zoom` (default 1) for stages that
+ * want the cloud to overfill its box. `scale` is the perspective factor
+ * (≈0.75..1.5 for fov = 3 and z' in [-1, 1]).
  */
 export function project(
   p: { x: number; y: number; z: number },
   rotY: number,
   fov: number,
   viewport: { w: number; h: number },
+  zoom = 1,
 ): Projected {
   const cos = Math.cos(rotY)
   const sin = Math.sin(rotY)
   const xr = p.x * cos + p.z * sin
   const zr = -p.x * sin + p.z * cos
   const persp = fov / (fov - zr)
-  const radius = Math.min(viewport.w, viewport.h) * 0.38
+  const radius = Math.min(viewport.w, viewport.h) * 0.38 * zoom
   return {
     sx: viewport.w / 2 + xr * persp * radius,
     sy: viewport.h / 2 + p.y * persp * radius,
