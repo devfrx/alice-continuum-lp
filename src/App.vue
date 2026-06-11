@@ -3,6 +3,8 @@ import SiteNav from './components/chrome/SiteNav.vue'
 import SiteFooter from './components/chrome/SiteFooter.vue'
 import SceneOverture from './components/scenes/SceneOverture.vue'
 import SceneSession from './components/scenes/SceneSession.vue'
+import SceneAlice from './components/scenes/SceneAlice.vue'
+import SceneContinuum from './components/scenes/SceneContinuum.vue'
 </script>
 
 <template>
@@ -10,8 +12,8 @@ import SceneSession from './components/scenes/SceneSession.vue'
   <main id="main">
     <SceneOverture />
     <SceneSession />
-    <!-- SceneFocusAlice -->
-    <!-- SceneFocusContinuum -->
+    <SceneAlice />
+    <SceneContinuum />
     <!-- SceneBridge -->
     <!-- ScenePrinciples -->
     <!-- SceneOutro -->
