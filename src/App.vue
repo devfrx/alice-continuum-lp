@@ -7,6 +7,7 @@ import SceneAlice from './components/scenes/SceneAlice.vue'
 import SceneContinuum from './components/scenes/SceneContinuum.vue'
 import SceneBridge from './components/scenes/SceneBridge.vue'
 import SceneTenets from './components/scenes/SceneTenets.vue'
+import SceneOutro from './components/scenes/SceneOutro.vue'
 </script>
 
 <template>
@@ -18,7 +19,7 @@ import SceneTenets from './components/scenes/SceneTenets.vue'
     <SceneContinuum />
     <SceneBridge />
     <SceneTenets />
-    <!-- SceneOutro -->
+    <SceneOutro />
   </main>
   <SiteFooter />
 </template>
