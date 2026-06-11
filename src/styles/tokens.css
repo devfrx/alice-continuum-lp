@@ -49,7 +49,8 @@ html[data-theme='light'] {
 
 @font-face {
   font-family: 'Kaluar';
-  src: url('/fonts/kaluar-demo.semi-bold.ttf') format('truetype');
+  src: url('/fonts/kaluar.woff2') format('woff2'),
+       url('/fonts/kaluar-demo.semi-bold.ttf') format('truetype');
   font-weight: 600;
   font-display: swap;
 }
