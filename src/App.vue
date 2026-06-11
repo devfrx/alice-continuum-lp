@@ -2,13 +2,14 @@
 import SiteNav from './components/chrome/SiteNav.vue'
 import SiteFooter from './components/chrome/SiteFooter.vue'
 import SceneOverture from './components/scenes/SceneOverture.vue'
+import SceneSession from './components/scenes/SceneSession.vue'
 </script>
 
 <template>
   <SiteNav />
   <main id="main">
     <SceneOverture />
-    <!-- SceneSession -->
+    <SceneSession />
     <!-- SceneFocusAlice -->
     <!-- SceneFocusContinuum -->
     <!-- SceneBridge -->
