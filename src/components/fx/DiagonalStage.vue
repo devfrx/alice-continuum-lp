@@ -124,12 +124,13 @@ const lineStyle = computed(() => {
   pointer-events: auto;
 }
 
+/* --dx-top/--dx-bottom already carry the % unit */
 .plane-left {
-  clip-path: polygon(0 0, calc(var(--dx-top)) 0, calc(var(--dx-bottom)) 100%, 0 100%);
+  clip-path: polygon(0 0, var(--dx-top) 0, var(--dx-bottom) 100%, 0 100%);
 }
 
 .plane-right {
-  clip-path: polygon(calc(var(--dx-top)) 0, 100% 0, 100% 100%, calc(var(--dx-bottom)) 100%);
+  clip-path: polygon(var(--dx-top) 0, 100% 0, 100% 100%, var(--dx-bottom) 100%);
 }
 
 .line {
