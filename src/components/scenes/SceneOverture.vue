@@ -396,7 +396,7 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   }
 
   .portrait {
-    height: min(52vh, 460px);
+    height: min(45vh, 420px);
     -webkit-mask-image: none;
     mask-image: none;
   }

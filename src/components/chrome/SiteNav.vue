@@ -131,6 +131,24 @@ const sections = computed(() => [
   .sections {
     display: none;
   }
+
+  .row {
+    gap: 14px;
+  }
+
+  /* On a 375px viewport the full lockup ends flush against the GitHub
+     link: scale the wordmarks down a notch instead of dropping one. */
+  .lockup {
+    gap: 8px;
+  }
+
+  .lockup :deep(img) {
+    height: 11px;
+  }
+
+  .actions {
+    gap: 10px;
+  }
 }
 
 /* Skip link: visually hidden until focused */

@@ -359,7 +359,7 @@ const currentBeat = computed(() => t.value.session.beats[effBeat.value] ?? t.val
     left: var(--gutter);
     right: var(--gutter);
     width: auto;
-    top: clamp(330px, 48vh, 430px);
+    top: clamp(360px, 53vh, 470px);
     bottom: clamp(76px, 12vh, 110px);
   }
 
