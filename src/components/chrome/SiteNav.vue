@@ -50,7 +50,7 @@ const sections = computed(() => [
       </nav>
 
       <div class="actions">
-        <a class="nav-link" :href="LINKS.aliceRepo" target="_blank" rel="noopener">
+        <a class="nav-link" :href="LINKS.aliceRepo" target="_blank" rel="noopener noreferrer">
           {{ t.nav.github }}
         </a>
         <LocaleToggle />
