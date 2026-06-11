@@ -60,6 +60,7 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
 .bridge {
   position: relative;
   height: 100vh;
+  height: 100svh;
   min-height: 640px;
   overflow: hidden;
 }

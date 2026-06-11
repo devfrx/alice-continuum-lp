@@ -6,7 +6,8 @@ html[data-theme='dark'] {
   --surface-2: #2a2a28;
   --text: #eceae5;
   --text-2: #adaba4;
-  --text-3: #74726b;
+  /* Lifted from the app token (#74726b) to clear WCAG AA 4.5:1 on --bg. */
+  --text-3: #8b8880;
   --accent: #e8dcc8;
   --accent-hover: #f5ede0;
   --on-accent: #1a1a19;
@@ -25,7 +26,8 @@ html[data-theme='light'] {
   --surface-2: #e7e1d7;
   --text: #1f1e1b;
   --text-2: #5f5b53;
-  --text-3: #8c887e;
+  /* Darkened from the app token (#8c887e) to clear WCAG AA 4.5:1 on --bg. */
+  --text-3: #6e695e;
   --accent: #7a5540;
   --accent-hover: #5f4232;
   --on-accent: #faf9f5;

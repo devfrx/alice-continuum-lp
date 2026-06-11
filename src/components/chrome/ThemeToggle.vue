@@ -81,6 +81,13 @@ const label = computed(() =>
   background: var(--accent-dim);
 }
 
+@media (pointer: coarse) {
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 .icon-enter-active,
 .icon-leave-active {
   transition:

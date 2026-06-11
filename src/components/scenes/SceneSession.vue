@@ -99,6 +99,7 @@ const currentBeat = computed(() => t.value.session.beats[effBeat.value] ?? t.val
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100svh;
   min-height: 640px;
   overflow: hidden;
   background: var(--bg);

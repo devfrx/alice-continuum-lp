@@ -120,6 +120,7 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
 
   position: relative;
   height: 100vh;
+  height: 100svh;
   min-height: 640px;
   overflow: hidden;
   background: var(--night);

@@ -15,15 +15,19 @@ function select(value: Locale): void {
 </script>
 
 <template>
-  <div class="locale-toggle" role="group" :aria-label="t.nav.ariaLocale">
+  <div class="locale-toggle" role="radiogroup" :aria-label="t.nav.ariaLocale">
     <button
       v-for="option in options"
       :key="option.value"
       type="button"
       class="seg"
+      role="radio"
       :class="{ active: locale === option.value }"
-      :aria-pressed="locale === option.value"
+      :aria-checked="locale === option.value"
+      :tabindex="locale === option.value ? 0 : -1"
       @click="select(option.value)"
+      @keydown.left.prevent="toggle()"
+      @keydown.right.prevent="toggle()"
     >
       {{ option.label }}
     </button>
@@ -61,5 +65,11 @@ function select(value: Locale): void {
 .seg.active {
   color: var(--accent);
   background: var(--accent-dim);
+}
+
+@media (pointer: coarse) {
+  .seg {
+    padding: 8px 12px;
+  }
 }
 </style>

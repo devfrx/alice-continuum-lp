@@ -140,8 +140,12 @@ function starPath(c: CanvasRenderingContext2D, cx: number, cy: number, R: number
 function render(now: number, isStatic: boolean): void {
   if (!ctx || cssW <= 0 || cssH <= 0) return
   const c = ctx
+  // Clear the full backing store with the identity transform: with a
+  // fractional dpr, clearing cssW×cssH in scaled space leaves a sub-pixel
+  // edge strip where antialiased fragments would accumulate.
+  c.setTransform(1, 0, 0, 1, 0, 0)
+  c.clearRect(0, 0, c.canvas.width, c.canvas.height)
   c.setTransform(dpr, 0, 0, dpr, 0, 0)
-  c.clearRect(0, 0, cssW, cssH)
 
   const g = graph.value
   const n = Math.min(revealedCount.value, g.nodes.length)
@@ -245,6 +249,22 @@ function syncLoop(): void {
   }
 }
 
+// Moving the window to a monitor with a different DPI does not fire the
+// ResizeObserver (CSS size is unchanged) — track it via a matchMedia query
+// re-armed on every change.
+let dprQuery: MediaQueryList | null = null
+
+function onDprChange(): void {
+  resize()
+  armDprListener()
+}
+
+function armDprListener(): void {
+  dprQuery?.removeEventListener('change', onDprChange)
+  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+  dprQuery.addEventListener('change', onDprChange)
+}
+
 function resize(): void {
   const el = root.value
   const cv = canvas.value
@@ -276,6 +296,7 @@ onMounted(() => {
   // Fallback for environments where RO callbacks are delayed/suppressed
   // (e.g. pages mounted while hidden) — a window resize re-measures.
   window.addEventListener('resize', resize, { passive: true })
+  armDprListener()
 
   intersectionObserver = new IntersectionObserver(
     (entries) => {
@@ -329,6 +350,8 @@ onBeforeUnmount(() => {
   stopFrame?.()
   stopFrame = null
   window.removeEventListener('resize', resize)
+  dprQuery?.removeEventListener('change', onDprChange)
+  dprQuery = null
   resizeObserver?.disconnect()
   resizeObserver = null
   intersectionObserver?.disconnect()
