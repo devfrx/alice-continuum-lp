@@ -175,7 +175,7 @@ const en: Copy = {
       {
         user: null,
         alice: 'Plan: find every note that mentions dragons, check the rest of the lore, then file properly.',
-        tools: ['continuum.query("dragon")', 'web.search("dragon anatomy reference")'],
+        tools: ['continuum.query("dragon")', 'files.scan("notes/")'],
         graphLabel: 'reading 14 notes · 2 tool calls',
         caption: 'AL\\CE plans, then calls tools. The loop is explicit — every step lands in the log.',
       },
@@ -340,7 +340,7 @@ const it: Copy = {
       {
         user: null,
         alice: 'Piano: trovo ogni nota che parla di draghi, controllo il resto del lore, poi archivio per bene.',
-        tools: ['continuum.query("dragon")', 'web.search("dragon anatomy reference")'],
+        tools: ['continuum.query("dragon")', 'files.scan("notes/")'],
         graphLabel: 'lettura di 14 note · 2 tool call',
         caption: 'AL\\CE pianifica, poi chiama gli strumenti. Il loop è esplicito: ogni passo finisce nel log.',
       },
@@ -349,7 +349,7 @@ const it: Copy = {
         alice: 'Tre gruppi: anatomia, fazioni, cronologia. Li scrivo ora, fonti allegate.',
         tools: ['continuum.write("dragons/anatomy")', 'notes.link(12)'],
         graphLabel: '+3 nodi · 12 link · fonti allegate',
-        caption: 'CONT\\NUUM riceve la scrittura. Nodi nuovi, file veri, ogni fonte citata.',
+        caption: 'La scrittura tocca a CONT\\NUUM. Nodi nuovi, file veri, ogni fonte citata.',
       },
       {
         user: 'Aspetta — quale fazione cavalca i draghi di ghiaccio?',
@@ -364,7 +364,7 @@ const it: Copy = {
   alice: {
     kicker: 'AL\\CE',
     title: 'Un assistente che agisce — e mostra il lavoro.',
-    intro: 'Un agente locale sul tuo PC. Pianifica, agisce, verifica, e annota ogni passaggio. Niente account, niente telemetria, nessuno che legge da sopra la spalla.',
+    intro: 'Un agente locale sul tuo PC. Pianifica, agisce, verifica, e annota ogni passaggio. Niente account, niente telemetria, nessuno che sbircia da sopra la spalla.',
     capabilities: [
       {
         title: 'Runtime locale',
@@ -374,7 +374,7 @@ const it: Copy = {
       {
         title: 'Voce',
         mono: 'wake word · STT · TTS',
-        desc: 'faster-whisper in ingresso, Piper o Kokoro in uscita. Il microfono ascolta te, non per conto di altri.',
+        desc: 'faster-whisper in ingresso, Piper o Kokoro in uscita. Il microfono ascolta te. Non riferisce a nessun altro.',
       },
       {
         title: 'Loop esplicito',
@@ -402,11 +402,11 @@ const it: Copy = {
   continuum: {
     kicker: 'CONT\\NUUM',
     title: 'Note che un\'AI può interrogare. File che puoi leggere tu.',
-    intro: 'Note in markdown, un grafo della conoscenza, ricerca semantica su embeddings locali. Fatto per worldbuilding, lore e la documentazione che interessa solo a te.',
+    intro: 'Note in markdown, un grafo della conoscenza, ricerca semantica su embedding locali. Fatto per worldbuilding, lore e la documentazione che interessa solo a te.',
     capabilities: [
       { title: 'Note', mono: 'markdown · WYSIWYG' },
       { title: 'Grafo', mono: 'backlink · grafo della conoscenza' },
-      { title: 'Ricerca', mono: 'embeddings locali · pgvector' },
+      { title: 'Ricerca', mono: 'embedding locali · pgvector' },
       { title: 'Struttura', mono: 'cartelle · ereditarietà · template' },
       { title: 'File', mono: 'in chiaro su disco · leggibili ovunque' },
     ],
@@ -443,18 +443,18 @@ const it: Copy = {
     ctaAlice: {
       name: 'AL\\CE',
       tagline: 'Modello. Strumenti. Stato.',
-      action: 'Stella su GitHub',
+      action: 'Metti una stella',
     },
     ctaContinuum: {
       name: 'CONT\\NUUM',
       tagline: 'File. Link. Vettori.',
-      action: 'Stella su GitHub',
+      action: 'Metti una stella',
     },
   },
 
   footer: {
     line: 'AL\\CE & CONT\\NUUM · pre-release · Windows-first',
-    madeWith: 'Niente analytics neanche su questa pagina. Si comincia come si intende continuare.',
+    madeWith: 'Niente analytics neanche su questa pagina. Coerenti dal primo giorno.',
   },
 
   a11y: {
