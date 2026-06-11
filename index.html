@@ -1,86 +1,79 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html data-theme="dark" lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#161616" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#FAFAF7" media="(prefers-color-scheme: light)" />
-    <meta name="referrer" content="strict-origin-when-cross-origin" />
-    <meta name="format-detection" content="telephone=no" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>AL\CE × CONT\NUUM | Local-first AI assistant and private knowledge graph</title>
+    <title>AL\CE × CONT\NUUM — Private AI workspace</title>
     <meta
       name="description"
-      content="AL\CE is a local AI assistant. CONT\NUUM is a private knowledge graph. Together they form an offline workspace for agents, notes, voice, tools and semantic memory."
+      content="A private AI workspace that runs on your machine and answers to no one. AL\CE, the local assistant. CONT\NUUM, the knowledge base."
     />
-    <meta name="author" content="AL\CE × CONT\NUUM" />
-    <meta name="application-name" content="AL\CE × CONT\NUUM" />
-    <meta name="apple-mobile-web-app-title" content="AL\CE × CONT\NUUM" />
-    <meta name="keywords" content="local AI assistant, private knowledge graph, agentic AI, semantic memory, RAG, MCP tools, plugin system, offline AI workspace, voice assistant, local LLM" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="/" />
+    <link rel="canonical" href="https://alice-continuum.vercel.app/" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="AL\CE × CONT\NUUM" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:url" content="/" />
-    <meta property="og:title" content="AL\CE × CONT\NUUM | Local-first AI workspace" />
-    <meta property="og:description" content="A local assistant, a private knowledge graph and visible tool contracts. One offline workspace for thinking, building and remembering privately." />
-    <meta property="og:image" content="/brand/alice_header.png" />
-    <meta property="og:image:alt" content="AL\CE and CONT\NUUM local-first AI workspace" />
+    <meta property="og:title" content="AL\CE × CONT\NUUM — Private AI workspace" />
+    <meta
+      property="og:description"
+      content="A private AI workspace that runs on your machine and answers to no one. AL\CE, the local assistant. CONT\NUUM, the knowledge base."
+    />
+    <meta property="og:image" content="/brand/gen/og.png" />
+    <meta property="og:url" content="https://alice-continuum.vercel.app/" />
 
-    <!-- Twitter -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="AL\CE × CONT\NUUM" />
-    <meta name="twitter:description" content="Local-first assistant, private graph, semantic memory and typed tools." />
-    <meta name="twitter:image" content="/brand/alice_header.png" />
-    <meta name="twitter:image:alt" content="AL\CE and CONT\NUUM local-first AI workspace" />
+    <meta name="twitter:title" content="AL\CE × CONT\NUUM — Private AI workspace" />
+    <meta
+      name="twitter:description"
+      content="A private AI workspace that runs on your machine and answers to no one. AL\CE, the local assistant. CONT\NUUM, the knowledge base."
+    />
+    <meta name="twitter:image" content="/brand/gen/og.png" />
 
-    <link rel="icon" type="image/webp" href="/brand/alice_logo_dark.webp" />
-    <link rel="apple-touch-icon" href="/brand/alice_logo_dark.webp" />
+    <meta name="theme-color" content="#161616" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Favicons & manifest -->
+    <link rel="icon" href="/brand/gen/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/brand/gen/favicon-180.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="preload" as="font" type="font/ttf" href="/fonts/kaluar-demo.semi-bold.ttf" crossorigin />
-    <link rel="preload" as="image" href="/brand/alice_header.png" fetchpriority="high" />
 
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareApplication",
-        "name": "AL\\CE × CONT\\NUUM",
-        "alternateName": "ALCE Continuum",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "Windows, macOS, Linux",
-        "description": "A local-first AI workspace combining an assistant runtime, voice, typed plugin tools, semantic memory and a private knowledge graph.",
-        "featureList": [
-          "Local LLM runtime",
-          "Private semantic memory",
-          "Typed plugin and MCP tools",
-          "Offline-first notes and graph workspace",
-          "Voice input and local text-to-speech",
-          "Inspectable local files and artifacts"
-        ],
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        }
-      }
+    <!-- Anti-flash: apply saved theme/locale before first paint -->
+    <script>
+      (function () {
+        var t = localStorage.getItem('lp-theme');
+        if (t !== 'dark' && t !== 'light')
+          t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = t;
+        var l = localStorage.getItem('lp-locale');
+        if (l !== 'en' && l !== 'it')
+          l = (navigator.language || 'en').toLowerCase().startsWith('it') ? 'it' : 'en';
+        document.documentElement.lang = l;
+      })();
     </script>
 
-    <script>
-      // Inline theme bootstrap to avoid FOUC.
-      (function () {
-        try {
-          var stored = localStorage.getItem('alce-theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var theme = stored || (prefersDark ? 'dark' : 'light');
-          document.documentElement.setAttribute('data-theme', theme);
-        } catch (e) {
-          /* noop */
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "AL\\CE",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Windows",
+          "offers": { "@type": "Offer", "price": 0, "priceCurrency": "USD" },
+          "description": "A local AI assistant that runs entirely on your machine, private by design."
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "CONT\\NUUM",
+          "applicationCategory": "UtilitiesApplication",
+          "operatingSystem": "Windows",
+          "offers": { "@type": "Offer", "price": 0, "priceCurrency": "USD" },
+          "description": "An AI-first knowledge base that organises and surfaces your personal information locally."
         }
-      })();
+      ]
     </script>
   </head>
   <body>

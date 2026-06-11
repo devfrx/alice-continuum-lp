@@ -1,171 +1,75 @@
-/* ── Reset ──────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  min-width: 320px;
-  overflow-x: clip;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: var(--t-body);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  transition: background-color var(--motion-slow), color var(--motion-slow);
+img,
+video,
+svg {
+  max-width: 100%;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 7rem;
-}
-
-#app {
-  min-height: 100vh;
-}
-
-img,
-picture,
-svg {
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  transition: color var(--motion-fast);
-}
-a:hover { color: var(--accent); }
-
-button {
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-}
-
-:focus-visible {
-  outline: 1px solid var(--accent);
-  outline-offset: 4px;
-  border-radius: 1px;
-}
-
-::selection {
-  background: var(--accent-strong);
-  color: var(--text-primary);
-}
-
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb {
-  background: var(--surface-4);
-  border: 3px solid var(--bg-primary);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
-
-/* ── Cinematic primitives ───────────────────────────────────── */
-.scene {
-  position: relative;
-  min-height: 100vh;
-  scroll-margin-top: 7rem;
-  width: 100%;
-  display: grid;
-  align-content: center;
-  padding-block: clamp(6rem, 12vh, 10rem);
-  padding-inline: var(--gutter);
-  overflow: hidden;
-}
-
-.scene > * {
-  min-width: 0;
-}
-
-.scene--tall {
-  min-height: 110vh;
-}
-
-.scene--full {
-  min-height: 100vh;
-  padding-block: 0;
-  align-content: stretch;
-}
-
-.shell {
-  width: 100%;
-  max-width: var(--max-w);
-  margin-inline: auto;
-}
-
-.display {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: var(--tracking-tight);
-  line-height: 0.92;
-}
-
-.serif-italic {
-  font-family: 'Times New Roman', Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-}
-
-.mono {
-  font-family: var(--font-mono);
-  font-size: var(--t-mono);
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-
-.divider-mega {
-  height: 1px;
-  background: var(--rule);
-  border: 0;
-  width: 100%;
-}
-
-@media (max-width: 520px) {
-  .scene {
-    min-height: auto;
-    scroll-margin-top: 6.75rem;
-    padding-block: clamp(5rem, 16vw, 7rem);
-    padding-inline: clamp(1rem, 5vw, 1.25rem);
-  }
-
-  .mono {
-    letter-spacing: 0.18em;
-  }
-}
-
-/* ── Reveal-on-scroll ───────────────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 1.1s var(--ease-cinema),
-              transform 1.1s var(--ease-cinema);
-}
-.reveal.is-in {
-  opacity: 1;
-  transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    transition: none !important;
-    animation: none !important;
+  html {
+    scroll-behavior: auto;
   }
-  html { scroll-behavior: auto; }
-  .reveal { opacity: 1; transform: none; }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Thin scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-2) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--surface-2);
+  border-radius: 3px;
+}
+
+/* Accessibility utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
