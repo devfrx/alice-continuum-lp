@@ -26,20 +26,20 @@ const sweep = computed(() => remap(progress.value, 0, 0.1, 0, 1))
 /* ——— the run, as data ———————————————————————————————————————— */
 
 // Audit ledger: every action of the run lands here, timed against
-// global scroll progress. Code register — identical across locales.
+// global scroll progress. Code register, identical across locales.
 const AUDIT = [
   { t: 0.045, ts: '00:00.4', line: 'wake.detect() → "alice"' },
   { t: 0.1, ts: '00:01.2', line: 'stt.transcribe() → 9 words' },
-  { t: 0.2, ts: '00:02.0', line: 'llm.plan(local) → 3 steps' },
-  { t: 0.26, ts: '00:02.4', line: 'guard.check(plan) → ok' },
-  { t: 0.36, ts: '00:03.1', line: 'continuum.query("dragon") → 14 notes' },
-  { t: 0.42, ts: '00:04.0', line: 'files.scan("notes/") → ok' },
-  { t: 0.47, ts: '00:04.6', line: 'mcp.connect("fs") → ready' },
+  { t: 0.2, ts: '00:02.0', line: 'llm.plan() → 3 steps' },
+  { t: 0.26, ts: '00:02.4', line: 'guard.confirm(plan) → approved' },
+  { t: 0.36, ts: '00:03.1', line: 'files.read("notes/") → 14 files' },
+  { t: 0.42, ts: '00:04.0', line: 'continuum.search("dragon") → 14 notes' },
+  { t: 0.47, ts: '00:04.6', line: 'mcp.connect("memory") → ready' },
   { t: 0.54, ts: '00:05.2', line: 'screen.capture() → 1920×1080' },
-  { t: 0.6, ts: '00:06.0', line: 'terminal.run("git add notes/") → exit 0' },
-  { t: 0.71, ts: '00:07.4', line: 'verify.diff() → 3 clusters · 12 links' },
-  { t: 0.8, ts: '00:08.1', line: 'memory.embed(session) → 384d' },
-  { t: 0.875, ts: '00:08.8', line: 'continuum.write("dragons/") → ✓' },
+  { t: 0.6, ts: '00:06.0', line: 'get_active_window() → "Notes"' },
+  { t: 0.71, ts: '00:07.4', line: 'continuum.notes.create() → 3 notes' },
+  { t: 0.8, ts: '00:08.1', line: 'continuum.embed() → pgvector' },
+  { t: 0.875, ts: '00:08.8', line: 'audit.log() → 12 actions' },
 ] as const
 
 const auditVisible = computed(() =>
@@ -48,16 +48,16 @@ const auditVisible = computed(() =>
 
 // Typed tool calls of the ACT beat (code register, locale-invariant).
 const TOOLS = [
-  { sig: 'continuum.query(topic: string) → Note[]', out: '14 notes', rt: 0.36 },
-  { sig: 'files.scan(dir: path) → File[]', out: '14 files', rt: 0.41 },
-  { sig: 'mcp.connect(server: id) → session', out: 'fs · ready', rt: 0.46 },
+  { sig: 'continuum.search(query: string) → Note[]', out: '14 notes', rt: 0.36 },
+  { sig: 'files.read(path: string) → File[]', out: '14 files', rt: 0.41 },
+  { sig: 'mcp.call(server: id, tool) → Result', out: 'memory · ready', rt: 0.46 },
 ] as const
 
 const TERMINAL = [
-  { text: '$ alice act --local', rt: 0.55 },
-  { text: '✓ model · qwen2.5-14b @ LM Studio', rt: 0.575 },
-  { text: '> terminal.run("git add notes/")', rt: 0.6 },
-  { text: 'exit 0 · logged', rt: 0.625 },
+  { text: '$ alice · pc automation', rt: 0.55 },
+  { text: '✓ model · LM Studio (local)', rt: 0.575 },
+  { text: '> screen.capture() → ok', rt: 0.6 },
+  { text: 'sandboxed · confirmed · logged', rt: 0.625 },
 ] as const
 
 // Which capability card narrates each beat.
@@ -215,7 +215,7 @@ const memZoom = computed(() => (reduced.value ? 0.9 : 0.75 + remap(progress.valu
             <KnowledgeGraph :nodes="26" :seed="5" :speed="0.07" :zoom="memZoom" />
           </div>
           <p class="mem-note">{{ t.alice.show.memoryNote }}</p>
-          <ToolCallChip label='continuum.write("dragons/")' done class="mem-chip" />
+          <ToolCallChip label='continuum.notes.create("dragons/")' done class="mem-chip" />
         </div>
       </div>
 
