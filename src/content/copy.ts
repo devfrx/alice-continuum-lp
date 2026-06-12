@@ -100,6 +100,10 @@ export interface Copy {
       ContinuumCapability,
     ]
     fileNote: string
+    /** Instrument readouts shown while the camera dives into the graph. */
+    hud: { depth: string; range: string; lock: string }
+    /** Scroll affordance shown before the dive begins. */
+    diveHint: string
   }
   bridge: {
     kicker: string
@@ -254,6 +258,8 @@ const en: Copy = {
       { title: 'Files', mono: 'plain on disk · readable anywhere' },
     ],
     fileNote: 'Open notes/dragon.md in any editor. It is exactly what it looks like. Plain by design.',
+    hud: { depth: 'depth', range: 'nodes in range', lock: 'node locked' },
+    diveHint: 'scroll · enter the graph',
   },
 
   bridge: {
@@ -424,6 +430,8 @@ const it: Copy = {
       { title: 'File', mono: 'in chiaro su disco · leggibili ovunque' },
     ],
     fileNote: 'Apri notes/dragon.md con qualsiasi editor. È esattamente quello che sembra. Semplice per scelta.',
+    hud: { depth: 'profondità', range: 'nodi in raggio', lock: 'nodo agganciato' },
+    diveHint: 'scrolla · entra nel grafo',
   },
 
   bridge: {

@@ -23,6 +23,16 @@ const props = withDefaults(
     accent?: string
     /** Cloud radius multiplier; >1 lets the constellation overfill its box. */
     zoom?: number
+    /**
+     * Camera distance in ellipsoid radii. 3 = the classic outside view;
+     * approaching 1 dollies the camera INTO the cloud — nodes fly past
+     * the lens and are culled once they cross it.
+     */
+    fov?: number
+    /** Node index whose screen position is reported via onTrack each frame. */
+    track?: number
+    /** Per-frame sink for the tracked node: screen x/y, scale, on-screen flag. */
+    onTrack?: (sx: number, sy: number, scale: number, visible: boolean) => void
   }>(),
   {
     nodes: 80,
@@ -32,16 +42,17 @@ const props = withDefaults(
     pulse: () => [],
     accent: undefined,
     zoom: 1,
+    fov: 3,
+    track: undefined,
+    onTrack: undefined,
   },
 )
 
-const FOV = 3
 const STATIC_ROT_Y = 0.6
 const BORN_MS = 600
 const PULSE_MS = 1600
-// persp range for fov=3, z' in [-1, 1] → used to normalize depth.
-const SCALE_MIN = FOV / (FOV + 1)
-const SCALE_MAX = FOV / (FOV - 1)
+/** Perspective factor beyond which a node has passed the lens. */
+const CULL_SCALE = 9
 
 const reducedMotion = useReducedMotion()
 
@@ -155,15 +166,22 @@ function render(now: number, isStatic: boolean): void {
   if (n === 0) return
   ensureBuffers(n)
 
+  const f = props.fov
+  // Depth-alpha normalization range for the current camera. The far cap is
+  // clamped so a deep dive (tiny fov) doesn't wash out the whole cloud.
+  const sMin = f / (f + 1)
+  const sMax = Math.min(f > 1.05 ? f / (f - 1) : CULL_SCALE, 4)
+
   const rot = isStatic ? STATIC_ROT_Y : rotY
   const vw = cssW
   const vh = cssH
   for (let i = 0; i < n; i++) {
     const node = g.nodes[i]!
-    const p = project(node, rot, FOV, { w: vw, h: vh }, props.zoom)
+    const p = project(node, rot, f, { w: vw, h: vh }, props.zoom)
     px[i] = p.sx
     py[i] = p.sy
-    pscale[i] = p.scale
+    // Sentinel -1: the node crossed (or is about to cross) the lens.
+    pscale[i] = p.scale <= 0 || p.scale > CULL_SCALE ? -1 : p.scale
   }
 
   // Edges first, alpha proportional to depth (average of both endpoints).
@@ -172,8 +190,10 @@ function render(now: number, isStatic: boolean): void {
   for (let e = 0; e < edges.length; e++) {
     const edge = edges[e]!
     if (edge.a >= n || edge.b >= n) continue
-    const s = (pscale[edge.a]! + pscale[edge.b]!) / 2
-    const norm = clamp01((s - SCALE_MIN) / (SCALE_MAX - SCALE_MIN))
+    const sa = pscale[edge.a]!
+    const sb = pscale[edge.b]!
+    if (sa < 0 || sb < 0) continue
+    const norm = clamp01(((sa + sb) / 2 - sMin) / (sMax - sMin))
     c.strokeStyle = accent(0.08 + 0.18 * norm)
     c.beginPath()
     c.moveTo(px[edge.a]!, py[edge.a]!)
@@ -190,7 +210,8 @@ function render(now: number, isStatic: boolean): void {
     const i = order[k]!
     const node = g.nodes[i]!
     const scale = pscale[i]!
-    const norm = clamp01((scale - SCALE_MIN) / (SCALE_MAX - SCALE_MIN))
+    if (scale < 0) continue
+    const norm = clamp01((scale - sMin) / (sMax - sMin))
 
     let bornScale = 1
     let flash = 0
@@ -213,7 +234,9 @@ function render(now: number, isStatic: boolean): void {
 
     const R = (1.5 + 2.5 * node.r) * scale * bornScale
     if (R <= 0) continue
-    c.fillStyle = accent(Math.min(1, 0.45 + 0.55 * norm + flash))
+    // Whoosh fade: nodes dissolve in the last stretch before the lens.
+    const nearFade = clamp01((CULL_SCALE - scale) / 2.2)
+    c.fillStyle = accent(Math.min(1, 0.45 + 0.55 * norm + flash) * nearFade)
     c.beginPath()
     starPath(c, px[i]!, py[i]!, R)
     c.fill()
@@ -229,6 +252,17 @@ function render(now: number, isStatic: boolean): void {
         c.stroke()
         c.lineWidth = 1
       }
+    }
+  }
+
+  // Report the tracked node's screen position to the parent overlay.
+  if (props.track !== undefined && props.onTrack) {
+    const ti = props.track
+    if (ti >= 0 && ti < n) {
+      const s = pscale[ti]!
+      const onScreen =
+        s > 0 && px[ti]! > -40 && px[ti]! < vw + 40 && py[ti]! > -40 && py[ti]! < vh + 40
+      props.onTrack(px[ti]!, py[ti]!, s, onScreen)
     }
   }
 }
@@ -350,9 +384,9 @@ watch(
 )
 
 // Scroll-driven dolly: when the animation loop is off (reduced motion or
-// off-screen), a zoom change still needs a fresh static frame.
+// off-screen), a camera change still needs a fresh static frame.
 watch(
-  () => props.zoom,
+  () => [props.zoom, props.fov],
   () => {
     if (reducedMotion.value || !stopFrame) renderStatic()
   },
