@@ -1,15 +1,18 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import DiagonalStage from '../fx/DiagonalStage.vue'
 import KnowledgeGraph from '../demo/KnowledgeGraph.vue'
 import Wordmark from '../brand/Wordmark.vue'
 import { useLocale } from '../../composables/useLocale'
 import { useScrollScene } from '../../composables/useScrollScene'
 import { useParallax } from '../../composables/useParallax'
+import { useReducedMotion } from '../../composables/useReducedMotion'
 import { LINKS } from '../../content/links'
-import { remap } from '../../lib/motion'
+import { clamp01, remap } from '../../lib/motion'
+import { onFrame } from '../../lib/raf'
 
 const { t } = useLocale()
+const reduced = useReducedMotion()
 
 const section = ref<HTMLElement | null>(null)
 const progress = useScrollScene(section)
@@ -18,6 +21,56 @@ useParallax(section, 1)
 // A 100vh first section sits at scroll-progress 0.5 on load and reaches 1
 // as it leaves the viewport: the diagonal closes gently on the way out.
 const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
+
+/* ——— opening choreography ———
+   The page boots all-night; the brand backslash then sweeps across,
+   carving out the ivory half. The constellation is born star by star. */
+
+const introT = ref(reduced.value ? 1 : 0)
+
+onMounted(() => {
+  if (reduced.value) return
+  // Clock starts on the first *rendered* frame, not at mount: a page
+  // loaded in a background tab still plays the intro when first seen.
+  let start = -1
+  const stop = onFrame((_dt, now) => {
+    if (start < 0) start = now
+    const tt = clamp01((now - start) / 1500)
+    introT.value = tt
+    if (tt >= 1) stop()
+  })
+})
+
+const easedIntro = computed(() => 1 - Math.pow(1 - introT.value, 3))
+
+// Once the intro lands, the stage hands over to the scroll-exit pose.
+const stagePose = computed(() => {
+  if (easedIntro.value < 1) {
+    return { from: { topX: -30, bottomX: -55 }, to: { topX: 60, bottomX: 40 }, p: easedIntro.value }
+  }
+  return { from: { topX: 60, bottomX: 40 }, to: { topX: 54, bottomX: 46 }, p: diagonalProgress.value }
+})
+
+// Stars are born one by one while the seam sweeps.
+const revealedNodes = computed(() =>
+  reduced.value ? 80 : Math.round(remap(easedIntro.value, 0.15, 1, 0, 80)),
+)
+
+/* ——— magnetic CTAs ——— */
+
+function onCtaMove(e: MouseEvent): void {
+  if (reduced.value) return
+  const el = e.currentTarget as HTMLElement
+  const r = el.getBoundingClientRect()
+  el.style.setProperty('--magx', `${(((e.clientX - r.left) / r.width - 0.5) * 8).toFixed(1)}px`)
+  el.style.setProperty('--magy', `${(((e.clientY - r.top) / r.height - 0.5) * 6).toFixed(1)}px`)
+}
+
+function onCtaLeave(e: MouseEvent): void {
+  const el = e.currentTarget as HTMLElement
+  el.style.setProperty('--magx', '0px')
+  el.style.setProperty('--magy', '0px')
+}
 </script>
 
 <template>
@@ -28,18 +81,20 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
       diagonal divides light from dark in both themes.
     -->
     <div class="stage">
-      <DiagonalStage
-        :from="{ topX: 60, bottomX: 40 }"
-        :to="{ topX: 54, bottomX: 46 }"
-        :progress="diagonalProgress"
-      >
+      <DiagonalStage :from="stagePose.from" :to="stagePose.to" :progress="stagePose.p">
         <template #left>
           <div class="pane pane-ivory"></div>
         </template>
         <template #right>
           <div class="pane pane-night">
             <div class="graph-layer">
-              <KnowledgeGraph :nodes="80" :seed="7" :speed="0.045" accent="#e8dcc8" />
+              <KnowledgeGraph
+                :nodes="80"
+                :seed="7"
+                :speed="0.045"
+                :revealed="revealedNodes"
+                accent="#e8dcc8"
+              />
             </div>
           </div>
         </template>
@@ -47,32 +102,34 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
     </div>
 
     <div class="portrait-wrap">
-      <picture>
-        <source
-          type="image/avif"
-          srcset="/brand/gen/alice-hero-800.avif 800w, /brand/gen/alice-hero-1024.avif 1024w"
-          sizes="(max-width: 820px) 70vw, 32vw"
-        />
-        <source
-          type="image/webp"
-          srcset="/brand/gen/alice-hero-800.webp 800w, /brand/gen/alice-hero-1024.webp 1024w"
-          sizes="(max-width: 820px) 70vw, 32vw"
-        />
-        <img
-          class="portrait"
-          src="/brand/gen/alice-hero-1024.webp"
-          :alt="t.a11y.portraitAlt"
-          fetchpriority="high"
-          decoding="async"
-        />
-      </picture>
+      <div class="portrait-ent">
+        <picture>
+          <source
+            type="image/avif"
+            srcset="/brand/gen/alice-hero-800.avif 800w, /brand/gen/alice-hero-1024.avif 1024w"
+            sizes="(max-width: 820px) 70vw, 32vw"
+          />
+          <source
+            type="image/webp"
+            srcset="/brand/gen/alice-hero-800.webp 800w, /brand/gen/alice-hero-1024.webp 1024w"
+            sizes="(max-width: 820px) 70vw, 32vw"
+          />
+          <img
+            class="portrait"
+            src="/brand/gen/alice-hero-1024.webp"
+            :alt="t.a11y.portraitAlt"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
+      </div>
     </div>
 
-    <div class="pane-caption caption-alice" aria-hidden="true">
+    <div class="pane-caption caption-alice reveal" style="--i: 7" aria-hidden="true">
       <Wordmark brand="alice" tone="espresso" :height="12" decorative />
       <span>{{ t.hero.paneAlice }}</span>
     </div>
-    <div class="pane-caption caption-continuum" aria-hidden="true">
+    <div class="pane-caption caption-continuum reveal" style="--i: 7" aria-hidden="true">
       <Wordmark brand="continuum" tone="cream" :height="12" decorative />
       <span>{{ t.hero.paneContinuum }}</span>
     </div>
@@ -80,12 +137,25 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
     <div class="content">
       <p class="eyebrow reveal" style="--i: 0">{{ t.hero.eyebrow }}</p>
       <h1 class="title">
-        <span class="title-line reveal" style="--i: 1">{{ t.hero.titleA }}</span>
-        <span class="title-line title-accent reveal" style="--i: 2">{{ t.hero.titleB }}</span>
+        <span class="mask"
+          ><span class="title-line mline" style="--d: 950ms">{{ t.hero.titleA }}</span></span
+        >
+        <span class="mask"
+          ><span class="title-line title-accent mline" style="--d: 1100ms">{{
+            t.hero.titleB
+          }}</span></span
+        >
       </h1>
       <p class="sub reveal" style="--i: 3">{{ t.hero.sub }}</p>
       <div class="ctas reveal" style="--i: 4">
-        <a class="cta cta-primary" :href="LINKS.aliceRepo" target="_blank" rel="noopener noreferrer">
+        <a
+          class="cta cta-primary"
+          :href="LINKS.aliceRepo"
+          target="_blank"
+          rel="noopener noreferrer"
+          @mousemove="onCtaMove"
+          @mouseleave="onCtaLeave"
+        >
           {{ t.hero.ctaPrimary }}
         </a>
         <a
@@ -93,6 +163,8 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
           :href="LINKS.continuumRepo"
           target="_blank"
           rel="noopener noreferrer"
+          @mousemove="onCtaMove"
+          @mouseleave="onCtaLeave"
         >
           {{ t.hero.ctaSecondary }}
         </a>
@@ -182,6 +254,31 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   transform-origin: 50% 100%;
 }
 
+/* Entrance lives on a wrapper so it never fights the parallax transform. */
+.portrait-ent {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  animation: portrait-rise 1.1s var(--ease-out-expo) 550ms both;
+}
+
+@keyframes portrait-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.portrait-ent picture {
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
 .portrait {
   height: 100%;
   width: auto;
@@ -255,6 +352,23 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   color: var(--cream);
 }
 
+/* Each title line rises out of its own mask, like a curtain lifting. */
+.mask {
+  display: block;
+  overflow: hidden;
+}
+
+.mline {
+  transform: translateY(115%);
+  animation: line-rise 1s var(--ease-out-expo) var(--d) both;
+}
+
+@keyframes line-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
 .sub {
   font-size: clamp(1rem, 1.25vw, 1.125rem);
   line-height: 1.65;
@@ -278,11 +392,13 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
+  /* Magnetic: the button leans toward the cursor. */
+  transform: translate(var(--magx, 0px), var(--magy, 0px));
   transition:
     background-color 160ms var(--ease-smooth),
     border-color 160ms var(--ease-smooth),
     color 160ms var(--ease-smooth),
-    transform 160ms var(--ease-smooth);
+    transform 180ms var(--ease-smooth);
 }
 
 .cta-primary {
@@ -292,7 +408,6 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
 
 .cta-primary:hover {
   background: var(--cream-hover);
-  transform: translateY(-1px);
 }
 
 .cta-ghost {
@@ -302,7 +417,6 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
 
 .cta-ghost:hover {
   border-color: rgba(232, 220, 200, 0.55);
-  transform: translateY(-1px);
 }
 
 /* ——— scroll hint ——— */
@@ -350,7 +464,8 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
 
 .reveal {
   animation: rise 0.9s var(--ease-out-expo) both;
-  animation-delay: calc(var(--i) * 90ms + 120ms);
+  /* Staggered in after the seam has carved out the stage. */
+  animation-delay: calc(var(--i) * 110ms + 700ms);
 }
 
 @keyframes rise {
@@ -373,11 +488,14 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   .overture {
     --exit: 0;
   }
-  .reveal {
+  .reveal,
+  .hint-line,
+  .portrait-ent {
     animation: none;
   }
-  .hint-line {
+  .mline {
     animation: none;
+    transform: none;
   }
   .portrait-wrap,
   .graph-layer {
@@ -386,6 +504,9 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   .content {
     transform: translateY(-52%);
     opacity: 1;
+  }
+  .cta {
+    transform: none;
   }
 }
 

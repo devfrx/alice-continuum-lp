@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import DiagonalStage from '../fx/DiagonalStage.vue'
 import Sparkle from '../brand/Sparkle.vue'
 import { useLocale } from '../../composables/useLocale'
-import { useScrollScene } from '../../composables/useScrollScene'
+import { usePinnedTimeline } from '../../composables/usePinnedTimeline'
 import { useReducedMotion } from '../../composables/useReducedMotion'
 import { remap } from '../../lib/motion'
 
@@ -11,68 +11,105 @@ const { t } = useLocale()
 const reduced = useReducedMotion()
 
 const section = ref<HTMLElement | null>(null)
-const progress = useScrollScene(section)
+const { progress } = usePinnedTimeline(section, 4)
 
 // The diagonal lies down into the local contract between the two apps:
 // a shallow seam entering the left edge at ~31% and leaving the right
-// edge at ~69% of the section height.
-const sweep = computed(() => remap(progress.value, 0.12, 0.45, 0, 1))
-const settled = computed(() => reduced.value || sweep.value > 0.92)
+// edge at ~69% of the viewport height.
+const sweep = computed(() => remap(progress.value, 0, 0.22, 0, 1))
+const settled = computed(() => reduced.value || sweep.value > 0.95)
 </script>
 
 <template>
   <section id="bridge" ref="section" class="bridge">
-    <div class="stage">
-      <DiagonalStage :from="{ topX: 8, bottomX: 16 }" :to="{ topX: -80, bottomX: 180 }" :progress="sweep">
-        <template #left>
-          <div class="pane pane-below"></div>
-        </template>
-        <template #right>
-          <div class="pane pane-above"></div>
-        </template>
-      </DiagonalStage>
-    </div>
-
-    <!-- Query packets ride the seam down into the archive; sources come back. -->
-    <div class="packets" :class="{ settled }" aria-hidden="true">
-      <span v-for="i in 3" :key="`f${i}`" class="packet go" :style="{ '--pd': `${(i - 1) * 2.3}s`, '--ps': `${(i - 1) * 0.3}` }">
-        <Sparkle :size="8" />
-      </span>
-      <span v-for="i in 2" :key="`r${i}`" class="packet back" :style="{ '--pd': `${1.1 + (i - 1) * 3.1}s`, '--ps': `${0.15 + (i - 1) * 0.34}` }">
-        <Sparkle :size="6" />
-      </span>
-    </div>
-
-    <header class="head">
-      <p class="kicker">{{ t.bridge.kicker }}</p>
-      <h2 class="title">{{ t.bridge.title }}</h2>
-      <p class="intro">{{ t.bridge.intro }}</p>
-    </header>
-
-    <!-- The handshake: one request and one response across the seam. -->
-    <div class="handshake">
-      <div class="shake-card card-ask">
-        <span class="shake-label">{{ t.bridge.ask.label }}</span>
-        <code class="shake-mono">{{ t.bridge.ask.mono }}</code>
+    <div class="sticky">
+      <div class="stage">
+        <DiagonalStage
+          :from="{ topX: 8, bottomX: 16 }"
+          :to="{ topX: -80, bottomX: 180 }"
+          :progress="sweep"
+        >
+          <template #left>
+            <div class="pane pane-below">
+              <!-- Archive heartbeat while the request is being served. -->
+              <div class="pulse" aria-hidden="true"></div>
+            </div>
+          </template>
+          <template #right>
+            <div class="pane pane-above"></div>
+          </template>
+        </DiagonalStage>
       </div>
-      <span class="connector" aria-hidden="true"></span>
-      <div class="shake-card card-reply">
-        <span class="shake-label">{{ t.bridge.reply.label }}</span>
-        <code class="shake-mono">{{ t.bridge.reply.mono }}</code>
+
+      <!-- Ambient packets riding the settled seam. -->
+      <div class="packets" :class="{ settled }" aria-hidden="true">
+        <span
+          v-for="i in 3"
+          :key="`f${i}`"
+          class="packet go"
+          :style="{ '--pd': `${(i - 1) * 2.3}s`, '--ps': `${(i - 1) * 0.3}` }"
+        >
+          <Sparkle :size="8" />
+        </span>
+        <span
+          v-for="i in 2"
+          :key="`r${i}`"
+          class="packet back"
+          :style="{ '--pd': `${1.1 + (i - 1) * 3.1}s`, '--ps': `${0.15 + (i - 1) * 0.34}` }"
+        >
+          <Sparkle :size="6" />
+        </span>
       </div>
-    </div>
 
-    <p class="label label-top">{{ t.bridge.labelTop }} <span class="dir">↓</span></p>
-    <p class="label label-bottom"><span class="dir">↑</span> {{ t.bridge.labelBottom }}</p>
+      <header class="head">
+        <p class="kicker">{{ t.bridge.kicker }}</p>
+        <h2 class="title">{{ t.bridge.title }}</h2>
+        <p class="intro">{{ t.bridge.intro }}</p>
+      </header>
 
-    <div class="clauses">
-      <p class="clauses-title">{{ t.bridge.clausesTitle }}</p>
-      <ol class="clause-list">
-        <li v-for="(channel, i) in t.bridge.channels" :key="channel" class="clause" :style="{ '--rt': 0.36 + i * 0.028 }">
-          <span class="clause-num">0{{ i + 1 }}</span>
-          <span class="clause-text">{{ channel }}</span>
-        </li>
-      </ol>
+      <p class="exhibit">{{ t.bridge.exhibit }}</p>
+
+      <p class="label label-top">{{ t.bridge.labelTop }} <span class="dir">↓</span></p>
+      <p class="label label-bottom"><span class="dir">↑</span> {{ t.bridge.labelBottom }}</p>
+
+      <!-- The negotiation: request travels down, the archive answers up. -->
+      <div class="handshake">
+        <div class="shake-card card-ask">
+          <span class="shake-label">{{ t.bridge.ask.label }}</span>
+          <code class="shake-mono">{{ t.bridge.ask.mono }}</code>
+        </div>
+
+        <div class="conn-wrap" aria-hidden="true">
+          <span class="conn-line"></span>
+          <span class="pkt pkt-down"></span>
+          <span class="pkt pkt-up"></span>
+        </div>
+
+        <div class="shake-card card-reply">
+          <span class="shake-label">{{ t.bridge.reply.label }}</span>
+          <code class="shake-mono">{{ t.bridge.reply.mono }}</code>
+        </div>
+      </div>
+
+      <!-- The clauses stamp in one by one; the seal closes the deal. -->
+      <div class="clauses">
+        <p class="clauses-title">{{ t.bridge.clausesTitle }}</p>
+        <ol class="clause-list">
+          <li
+            v-for="(channel, i) in t.bridge.channels"
+            :key="channel"
+            class="clause"
+            :style="{ '--rt': 0.72 + i * 0.045, '--rot': i % 2 ? '1.8deg' : '-2.4deg' }"
+          >
+            <span class="clause-num">0{{ i + 1 }}</span>
+            <span class="clause-text">{{ channel }}</span>
+          </li>
+        </ol>
+        <p class="seal">
+          <Sparkle :size="10" />
+          <span>{{ t.bridge.sealed }}</span>
+        </p>
+      </div>
     </div>
   </section>
 </template>
@@ -80,9 +117,17 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
 <style scoped>
 .bridge {
   position: relative;
+  /* Sweep → request → response → signing: four movements of contract. */
+  height: 380vh;
+  background: var(--bg);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
   height: 100vh;
   height: 100svh;
-  min-height: 700px;
+  min-height: 640px;
   overflow: hidden;
 }
 
@@ -108,7 +153,35 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   background-size: 28px 28px;
 }
 
-/* ——— traveling packets ——— */
+/* The lattice flares while the archive serves the request. */
+.pulse {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--accent-border) 1.2px,
+    transparent 1.8px
+  );
+  background-size: 28px 28px;
+  opacity: calc(
+    min(
+        clamp(0, calc((var(--p, 0) - 0.46) * 10), 1),
+        clamp(0, calc((0.62 - var(--p, 0)) * 10), 1)
+      ) * 0.9
+  );
+  animation: lattice-throb 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes lattice-throb {
+  from {
+    filter: brightness(0.85);
+  }
+  to {
+    filter: brightness(1.25);
+  }
+}
+
+/* ——— ambient packets ——— */
 
 .packets {
   position: absolute;
@@ -168,7 +241,6 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   }
 }
 
-/* The return track runs just below the seam, right to left. */
 @keyframes packet-back {
   0% {
     transform: translate(103vw, 73.2vh);
@@ -186,21 +258,11 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .packet.go,
-  .packet.back {
-    animation: none;
-    opacity: 1;
-    /* Static spots along the settled seam: y(vh) = (x(vw) + 80) / 2.6 */
-    transform: translate(calc(17vw + var(--ps) * 100vw), calc(37.3vh + var(--ps) * 38.5vh));
-  }
-}
-
 /* ——— copy ——— */
 
 .head {
   position: absolute;
-  top: clamp(64px, 10vh, 110px);
+  top: clamp(58px, 9vh, 104px);
   left: var(--gutter);
   max-width: 600px;
   z-index: 1;
@@ -232,7 +294,46 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   max-width: 58ch;
 }
 
-/* ——— the handshake ——— */
+.exhibit {
+  position: absolute;
+  top: clamp(58px, 9vh, 104px);
+  right: var(--gutter);
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+/* ——— seam-end labels ——— */
+
+.label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  z-index: 1;
+  opacity: clamp(0, calc((var(--p, 0) - 0.18) * 10), 1);
+}
+
+.label .dir {
+  color: var(--accent);
+}
+
+.label-top {
+  right: var(--gutter);
+  top: 56%;
+}
+
+.label-bottom {
+  left: var(--gutter);
+  top: 58%;
+}
+
+/* ——— the negotiation ——— */
 
 .handshake {
   position: absolute;
@@ -256,16 +357,18 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
 .card-ask {
   left: 56%;
   bottom: 62%;
-  opacity: clamp(0, calc((var(--p, 1) - 0.3) * 9), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - 0.3) * 9), 1)) * -14px));
+  --w: clamp(0, calc((var(--p, 0) - 0.26) * 12), 1);
+  opacity: var(--w);
+  transform: translateY(calc((1 - var(--w)) * -16px));
 }
 
 .card-reply {
   left: 60%;
   top: 64%;
   background: var(--bg-raise);
-  opacity: clamp(0, calc((var(--p, 1) - 0.36) * 9), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - 0.36) * 9), 1)) * 14px));
+  --w: clamp(0, calc((var(--p, 0) - 0.56) * 12), 1);
+  opacity: var(--w);
+  transform: translateY(calc((1 - var(--w)) * 16px));
 }
 
 .shake-label {
@@ -284,23 +387,26 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   white-space: nowrap;
 }
 
-/* Crosses the seam between the two cards; small square terminals. */
-.connector {
+/* Crosses the seam between the two cards; packets travel it. */
+.conn-wrap {
   position: absolute;
   left: calc(56% + 26px);
   top: 38%;
   height: 26%;
   width: 1px;
-  background: repeating-linear-gradient(
-    to bottom,
-    var(--accent) 0 4px,
-    transparent 4px 9px
-  );
-  opacity: clamp(0, calc((var(--p, 1) - 0.42) * 9), 1);
 }
 
-.connector::before,
-.connector::after {
+.conn-line {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, var(--accent) 0 4px, transparent 4px 9px);
+  /* The line draws itself ahead of the request packet. */
+  transform: scaleY(clamp(0, calc((var(--p, 0) - 0.32) * 8), 1));
+  transform-origin: top;
+}
+
+.conn-line::before,
+.conn-line::after {
   content: '';
   position: absolute;
   left: -3px;
@@ -309,38 +415,41 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   background: var(--accent);
 }
 
-.connector::before {
+.conn-line::before {
   top: -3px;
 }
 
-.connector::after {
+.conn-line::after {
   bottom: -3px;
 }
 
-/* ——— seam-end labels ——— */
-
-.label {
+/* Request rides down; the answer climbs back up. */
+.pkt {
   position: absolute;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-2);
-  z-index: 1;
+  left: -4px;
+  width: 9px;
+  height: 9px;
+  background: var(--accent);
 }
 
-.label .dir {
-  color: var(--accent);
+.pkt-down {
+  --seg: clamp(0, calc((var(--p, 0) - 0.36) * 6.25), 1);
+  top: calc(var(--seg) * 100%);
+  opacity: min(
+    clamp(0, calc((var(--p, 0) - 0.36) * 14), 1),
+    clamp(0, calc((0.54 - var(--p, 0)) * 14), 1)
+  );
 }
 
-.label-top {
-  right: var(--gutter);
-  top: 56%;
-}
-
-.label-bottom {
-  left: var(--gutter);
-  top: 58%;
+.pkt-up {
+  --seg: clamp(0, calc((var(--p, 0) - 0.62) * 8.3), 1);
+  top: calc((1 - var(--seg)) * 100%);
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
+  opacity: min(
+    clamp(0, calc((var(--p, 0) - 0.62) * 14), 1),
+    clamp(0, calc((0.78 - var(--p, 0)) * 14), 1)
+  );
 }
 
 /* ——— contract clauses ——— */
@@ -378,13 +487,15 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   text-transform: uppercase;
 }
 
+/* Each clause is stamped onto the page: presses in, settles flat. */
 .clause {
   display: flex;
   align-items: baseline;
   gap: 9px;
   color: var(--text-2);
-  opacity: clamp(0.04, calc((var(--p, 1) - var(--rt)) * 9), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1)) * 10px));
+  --r: clamp(0, calc((var(--p, 0) - var(--rt)) * 16), 1);
+  opacity: var(--r);
+  transform: scale(calc(1.45 - var(--r) * 0.45)) rotate(calc(var(--rot) * (1 - var(--r))));
 }
 
 .clause-num {
@@ -392,42 +503,85 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
   font-size: 10.5px;
 }
 
+.seal {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  --w: clamp(0, calc((var(--p, 0) - 0.94) * 18), 1);
+  opacity: var(--w);
+  transform: scale(calc(1.3 - var(--w) * 0.3));
+}
+
+/* ——— reduced motion: the executed contract, at rest ——— */
+
 @media (prefers-reduced-motion: reduce) {
-  .shake-card,
-  .connector,
-  .clause {
+  .bridge {
+    height: auto;
+  }
+
+  .sticky {
+    position: static;
+    height: auto;
+    min-height: 640px;
+    overflow: hidden;
+  }
+
+  .pulse,
+  .pkt {
+    display: none;
+  }
+
+  .packet.go,
+  .packet.back {
+    animation: none;
     opacity: 1;
+    /* Static spots along the settled seam: y(vh) = (x(vw) + 80) / 2.6 */
+    transform: translate(calc(17vw + var(--ps) * 100vw), calc(37.3vh + var(--ps) * 38.5vh));
+  }
+
+  .label,
+  .card-ask,
+  .card-reply,
+  .clause,
+  .seal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .conn-line {
     transform: none;
   }
 }
 
-/* ——— mobile: stacked contract, seam as backdrop ——— */
+/* ——— mobile: the negotiation as a centered column ——— */
 
 @media (max-width: 820px) {
-  .bridge {
-    height: auto;
-    min-height: 0;
-    padding: 84px 0 0;
-  }
-
   .head {
-    position: static;
-    padding-inline: var(--gutter);
-    margin-bottom: 36px;
+    right: var(--gutter);
+    max-width: none;
   }
 
-  .label {
+  .exhibit,
+  .label,
+  .packets {
     display: none;
   }
 
   .handshake {
-    position: static;
+    inset: auto;
+    left: var(--gutter);
+    right: var(--gutter);
+    top: 38vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0;
-    padding-inline: var(--gutter);
-    margin-bottom: 44px;
   }
 
   .shake-card {
@@ -444,25 +598,26 @@ const settled = computed(() => reduced.value || sweep.value > 0.92)
     white-space: normal;
   }
 
-  .connector {
-    position: static;
-    height: 34px;
-    opacity: clamp(0, calc((var(--p, 1) - 0.42) * 9), 1);
-  }
-
-  .packets {
-    display: none;
+  .conn-wrap {
+    position: relative;
+    left: auto;
+    top: auto;
+    height: 48px;
+    width: 1px;
   }
 
   .clauses {
-    position: static;
     flex-direction: column;
+    align-items: flex-start;
     gap: 14px;
-    margin-inline: var(--gutter);
   }
 
   .clause-list {
     gap: 12px 22px;
+  }
+
+  .seal {
+    margin-left: 0;
   }
 }
 </style>

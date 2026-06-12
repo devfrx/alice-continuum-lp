@@ -133,6 +133,9 @@ export interface Copy {
     reply: { label: string; mono: string }
     clausesTitle: string
     channels: [string, string, string, string, string]
+    /** Contract chrome: exhibit tag and the final seal line. */
+    exhibit: string
+    sealed: string
   }
   tenets: {
     kicker: string
@@ -312,6 +315,8 @@ const en: Copy = {
     reply: { label: 'CONT\\NUUM · answers', mono: '→ 3 sources · notes/dragon.md' },
     clausesTitle: 'Clauses',
     channels: ['shared index', 'knowledge API', 'RAG context', 'event bus', 'artifacts'],
+    exhibit: 'EXHIBIT B-01 · LOCAL CONTRACT',
+    sealed: 'signed · local · in force',
   },
 
   tenets: {
@@ -507,6 +512,8 @@ const it: Copy = {
     reply: { label: 'CONT\\NUUM · risponde', mono: '→ 3 fonti · notes/dragon.md' },
     clausesTitle: 'Clausole',
     channels: ['indice condiviso', 'API della conoscenza', 'contesto RAG', 'event bus', 'artefatti'],
+    exhibit: 'ALLEGATO B-01 · CONTRATTO LOCALE',
+    sealed: 'firmato · locale · in vigore',
   },
 
   tenets: {
