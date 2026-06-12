@@ -349,6 +349,15 @@ watch(
   },
 )
 
+// Scroll-driven dolly: when the animation loop is off (reduced motion or
+// off-screen), a zoom change still needs a fresh static frame.
+watch(
+  () => props.zoom,
+  () => {
+    if (reducedMotion.value || !stopFrame) renderStatic()
+  },
+)
+
 onBeforeUnmount(() => {
   stopFrame?.()
   stopFrame = null

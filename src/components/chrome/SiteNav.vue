@@ -10,9 +10,12 @@ import ThemeToggle from './ThemeToggle.vue'
 const { t } = useLocale()
 
 const scrolled = ref(false)
+const pageProgress = ref(0)
 
 function onScroll(): void {
   scrolled.value = window.scrollY > 24
+  const max = document.documentElement.scrollHeight - window.innerHeight
+  pageProgress.value = max > 0 ? Math.min(1, window.scrollY / max) : 0
 }
 
 onMounted(() => {
@@ -57,6 +60,12 @@ const sections = computed(() => [
         <ThemeToggle />
       </div>
     </div>
+
+    <span
+      class="read-progress"
+      :style="{ transform: `scaleX(${pageProgress})` }"
+      aria-hidden="true"
+    ></span>
   </header>
 </template>
 
@@ -125,6 +134,20 @@ const sections = computed(() => [
   display: flex;
   align-items: center;
   gap: 14px;
+}
+
+/* Reading progress hairline along the nav's bottom edge. */
+.read-progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0.85;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
 }
 
 @media (max-width: 820px) {

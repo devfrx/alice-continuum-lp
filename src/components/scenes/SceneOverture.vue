@@ -118,6 +118,10 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   --cream: #e8dcc8;
   --cream-hover: #f5ede0;
 
+  /* Exit progress (0..1): ramps as the hero scrolls out of the viewport,
+     driving layered depth on the way out. */
+  --exit: clamp(0, calc((var(--p, 0.5) - 0.5) * 2), 1);
+
   position: relative;
   height: 100vh;
   height: 100svh;
@@ -150,7 +154,11 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   right: 0;
   bottom: 0;
   width: 64%;
-  transform: translate3d(calc(var(--mx, 0) * -10px), calc(var(--my, 0) * -7px), 0);
+  transform: translate3d(
+    calc(var(--mx, 0) * -10px - var(--exit, 0) * 3vw),
+    calc(var(--my, 0) * -7px),
+    0
+  );
 }
 
 .graph-layer > * {
@@ -167,7 +175,11 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   height: 86%;
   display: flex;
   align-items: flex-end;
-  transform: translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 7px), 0);
+  /* 2.5D: the portrait leans with the cursor and sinks on exit. */
+  transform: perspective(1100px)
+    translate3d(calc(var(--mx, 0) * 12px), calc(var(--my, 0) * 7px + var(--exit, 0) * 9vh), 0)
+    rotateY(calc(var(--mx, 0) * 3.5deg));
+  transform-origin: 50% 100%;
 }
 
 .portrait {
@@ -209,7 +221,9 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   position: absolute;
   top: 50%;
   right: var(--gutter);
-  transform: translateY(-52%);
+  /* Copy rises faster than the portrait on exit — cheap parallax depth. */
+  transform: translateY(calc(-52% - var(--exit, 0) * 12vh));
+  opacity: calc(1 - var(--exit, 0) * 0.85);
   width: min(560px, 42vw);
   color: var(--night-ink);
 }
@@ -356,6 +370,9 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .overture {
+    --exit: 0;
+  }
   .reveal {
     animation: none;
   }
@@ -365,6 +382,10 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
   .portrait-wrap,
   .graph-layer {
     transform: none;
+  }
+  .content {
+    transform: translateY(-52%);
+    opacity: 1;
   }
 }
 
@@ -406,6 +427,7 @@ const diagonalProgress = computed(() => remap(progress.value, 0.5, 1, 0, 1))
     top: auto;
     right: auto;
     transform: none;
+    opacity: 1;
     width: auto;
     color: var(--text);
     padding: 40px var(--gutter) 56px;

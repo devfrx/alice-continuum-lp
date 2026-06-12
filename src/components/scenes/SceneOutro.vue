@@ -4,9 +4,11 @@ import Sparkle from '../brand/Sparkle.vue'
 import Wordmark from '../brand/Wordmark.vue'
 import { useLocale } from '../../composables/useLocale'
 import { useScrollScene } from '../../composables/useScrollScene'
+import { useReducedMotion } from '../../composables/useReducedMotion'
 import { LINKS } from '../../content/links'
 
 const { t } = useLocale()
+const reduced = useReducedMotion()
 
 const section = ref<HTMLElement | null>(null)
 useScrollScene(section)
@@ -15,6 +17,25 @@ const cards = [
   { key: 'alice' as const, href: LINKS.aliceRepo, primary: true },
   { key: 'continuum' as const, href: LINKS.continuumRepo, primary: false },
 ]
+
+// 3D tilt following the cursor, plus a specular sheen at the pointer.
+function onCardMove(e: MouseEvent): void {
+  if (reduced.value) return
+  const el = e.currentTarget as HTMLElement
+  const r = el.getBoundingClientRect()
+  const x = (e.clientX - r.left) / r.width - 0.5
+  const y = (e.clientY - r.top) / r.height - 0.5
+  el.style.setProperty('--ry', `${(x * 8).toFixed(2)}deg`)
+  el.style.setProperty('--rx', `${(-y * 6).toFixed(2)}deg`)
+  el.style.setProperty('--gx', `${(x * 100 + 50).toFixed(1)}%`)
+  el.style.setProperty('--gy', `${(y * 100 + 50).toFixed(1)}%`)
+}
+
+function onCardLeave(e: MouseEvent): void {
+  const el = e.currentTarget as HTMLElement
+  el.style.setProperty('--ry', '0deg')
+  el.style.setProperty('--rx', '0deg')
+}
 </script>
 
 <template>
@@ -37,6 +58,8 @@ const cards = [
           :href="card.href"
           target="_blank"
           rel="noopener noreferrer"
+          @mousemove="onCardMove"
+          @mouseleave="onCardLeave"
         >
           <span class="card-head">
             <Wordmark :brand="card.key" variant="mark" :height="26" decorative />
@@ -145,9 +168,11 @@ const cards = [
   gap: 16px;
   margin-bottom: 32px;
   text-align: left;
+  perspective: 1100px;
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -157,14 +182,35 @@ const cards = [
   background: var(--bg);
   text-decoration: none;
   color: var(--text);
+  overflow: hidden;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  will-change: transform;
   transition:
     border-color 180ms var(--ease-smooth),
-    transform 180ms var(--ease-smooth);
+    transform 160ms var(--ease-smooth);
+}
+
+/* Specular sheen tracking the pointer. */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    320px circle at var(--gx, 50%) var(--gy, 50%),
+    var(--accent-dim),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 220ms var(--ease-smooth);
+  pointer-events: none;
 }
 
 .card:hover {
   border-color: var(--accent-border);
-  transform: translateY(-2px);
+}
+
+.card:hover::after {
+  opacity: 1;
 }
 
 .card-head {

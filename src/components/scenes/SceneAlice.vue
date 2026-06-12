@@ -138,6 +138,8 @@ const sweep = computed(() => remap(progress.value, 0.2, 0.6, 0, 1))
 .ledger {
   list-style: none;
   max-width: 880px;
+  /* Rows unfold in 3D as they reveal. */
+  perspective: 1200px;
 }
 
 .row {
@@ -148,8 +150,10 @@ const sweep = computed(() => remap(progress.value, 0.2, 0.6, 0, 1))
   padding: 22px 0;
   border-top: 1px solid var(--line);
   /* Scrub-reversible reveal driven by the section's --p. */
+  --r: clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1);
   opacity: clamp(0.04, calc((var(--p, 1) - var(--rt)) * 9), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1)) * 22px));
+  transform: translateY(calc((1 - var(--r)) * 28px)) rotateX(calc((1 - var(--r)) * -22deg));
+  transform-origin: 50% 0;
 }
 
 .row:last-child {

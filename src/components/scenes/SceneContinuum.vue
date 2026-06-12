@@ -6,15 +6,21 @@ import Sparkle from '../brand/Sparkle.vue'
 import Wordmark from '../brand/Wordmark.vue'
 import { useLocale } from '../../composables/useLocale'
 import { useScrollScene } from '../../composables/useScrollScene'
+import { useReducedMotion } from '../../composables/useReducedMotion'
 import { remap } from '../../lib/motion'
 
 const { t } = useLocale()
+const reduced = useReducedMotion()
 
 const section = ref<HTMLElement | null>(null)
 const progress = useScrollScene(section)
 
 // Mirrored sweep: the diagonal crosses back left, CONT\NUUM takes the stage.
 const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
+
+// Scroll-driven dolly: the constellation swells as the section crosses
+// the viewport (≈1.5 at section center, matching the old static zoom).
+const zoom = computed(() => (reduced.value ? 1.5 : 1.15 + progress.value * 0.7))
 </script>
 
 <template>
@@ -45,7 +51,7 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
       </header>
 
       <div class="graph-stage">
-        <KnowledgeGraph :nodes="140" :seed="23" :speed="0.05" :zoom="1.5" />
+        <KnowledgeGraph :nodes="140" :seed="23" :speed="0.05" :zoom="zoom" />
         <p class="file-note">
           <Sparkle :size="10" />
           <span>{{ t.continuum.fileNote }}</span>
@@ -194,6 +200,7 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
   grid-template-columns: repeat(5, minmax(0, 1fr));
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  perspective: 1000px;
 }
 
 .cap {
@@ -204,8 +211,10 @@ const sweep = computed(() => remap(progress.value, 0.15, 0.55, 0, 1))
   flex-direction: column;
   gap: 8px;
   border-right: 1px solid var(--line);
+  --r: clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1);
   opacity: clamp(0.04, calc((var(--p, 1) - var(--rt)) * 9), 1);
-  transform: translateY(calc((1 - clamp(0, calc((var(--p, 1) - var(--rt)) * 9), 1)) * 16px));
+  transform: translateY(calc((1 - var(--r)) * 18px)) rotateX(calc((1 - var(--r)) * -20deg));
+  transform-origin: 50% 0;
 }
 
 .cap:last-child {
