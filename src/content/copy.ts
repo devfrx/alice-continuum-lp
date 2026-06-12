@@ -87,6 +87,23 @@ export interface Copy {
       AliceCapability,
       AliceCapability,
     ]
+    /** The pinned anatomy show: one real run, seen from inside the agent. */
+    show: {
+      /** The spoken command that wakes the agent. */
+      wakeQuote: string
+      listening: string
+      planTitle: string
+      planItems: [string, string, string]
+      toolsTitle: string
+      autoTitle: string
+      autoChecks: [string, string, string]
+      verifyTitle: string
+      verifyChecks: [string, string, string]
+      memoryTitle: string
+      memoryNote: string
+      auditLabel: string
+      actionsLabel: string
+    }
   }
   continuum: {
     kicker: string
@@ -244,6 +261,29 @@ const en: Copy = {
         desc: 'It remembers on a local vector store, and every action lands in the log. Both readable by you.',
       },
     ],
+    show: {
+      wakeQuote: '“Alice — file my notes on the dragon project.”',
+      listening: 'wake word · listening',
+      planTitle: 'Plan',
+      planItems: [
+        'find every note that mentions dragons',
+        'cluster by theme, check the rest of the lore',
+        'write to CONT\\NUUM with sources attached',
+      ],
+      toolsTitle: 'Typed tool calls',
+      autoTitle: 'Your PC, hands on',
+      autoChecks: [
+        'screenshot · it sees the screen',
+        'input · it moves the cursor',
+        'terminal · it runs commands',
+      ],
+      verifyTitle: 'Verify',
+      verifyChecks: ['3 notes written', '12 sources linked', '0 errors · 0 cloud calls'],
+      memoryTitle: 'The session becomes memory',
+      memoryNote: 'Embedded on local vectors. Next time, it already knows.',
+      auditLabel: 'audit trail',
+      actionsLabel: 'actions',
+    },
   },
 
   continuum: {
@@ -416,6 +456,29 @@ const it: Copy = {
         desc: 'Ricorda su un vector store locale e ogni azione finisce nel log. Entrambi leggibili da te.',
       },
     ],
+    show: {
+      wakeQuote: '«Alice — archivia gli appunti sul progetto drago.»',
+      listening: 'wake word · in ascolto',
+      planTitle: 'Piano',
+      planItems: [
+        'trova ogni nota che cita i draghi',
+        'raggruppa per tema, controlla il resto del lore',
+        'scrivi in CONT\\NUUM con le fonti allegate',
+      ],
+      toolsTitle: 'Tool call tipizzate',
+      autoTitle: 'Il tuo PC, mani sulla tastiera',
+      autoChecks: [
+        'screenshot · vede lo schermo',
+        'input · muove il cursore',
+        'terminale · lancia comandi',
+      ],
+      verifyTitle: 'Verifica',
+      verifyChecks: ['3 note scritte', '12 fonti collegate', '0 errori · 0 chiamate cloud'],
+      memoryTitle: 'La sessione diventa memoria',
+      memoryNote: 'Embedding su vettori locali. La prossima volta, lo sa già.',
+      auditLabel: 'audit trail',
+      actionsLabel: 'azioni',
+    },
   },
 
   continuum: {

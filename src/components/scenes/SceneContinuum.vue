@@ -63,7 +63,7 @@ function handleTrack(sx: number, sy: number, _scale: number, visible: boolean): 
     <div class="sticky">
       <div class="stage">
         <DiagonalStage
-          :from="{ topX: 94, bottomX: 86 }"
+          :from="{ topX: 103, bottomX: 97 }"
           :to="{ topX: 8, bottomX: 16 }"
           :progress="sweep"
         >
